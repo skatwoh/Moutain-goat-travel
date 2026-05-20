@@ -275,6 +275,66 @@ const MountainGoatDB = {
     if (!localStorage.getItem("mgt_wishlist")) {
       localStorage.setItem("mgt_wishlist", JSON.stringify([]));
     }
+    if (!localStorage.getItem("mgt_users")) {
+      const defaultUsers = [
+        {
+          id: "u-001",
+          email: "admin@mountaingoat.vn",
+          password: "admin123",
+          name: "Super Admin",
+          role: "superadmin"
+        }
+      ];
+      localStorage.setItem("mgt_users", JSON.stringify(defaultUsers));
+    }
+  },
+
+  login(email, password) {
+    const users = JSON.parse(localStorage.getItem("mgt_users") || "[]");
+    const user = users.find(u => u.email === email && u.password === password);
+    if (user) {
+      const sessionUser = { ...user };
+      delete sessionUser.password;
+      localStorage.setItem("mgt_current_user", JSON.stringify(sessionUser));
+      return sessionUser;
+    }
+    return null;
+  },
+
+  logout() {
+    localStorage.removeItem("mgt_current_user");
+  },
+
+  getCurrentUser() {
+    return JSON.parse(localStorage.getItem("mgt_current_user") || "null");
+  },
+
+  getUsers() {
+    return JSON.parse(localStorage.getItem("mgt_users") || "[]");
+  },
+
+  createAdmin(userData) {
+    const currentUser = this.getCurrentUser();
+    if (!currentUser || currentUser.role !== "superadmin") {
+      throw new Error("Only superadmin can create new admin accounts.");
+    }
+
+    const users = this.getUsers();
+    if (users.find(u => u.email === userData.email)) {
+      throw new Error("Email already exists.");
+    }
+
+    const newUser = {
+      id: "u-" + Date.now().toString().slice(-4),
+      email: userData.email,
+      password: userData.password,
+      name: userData.name,
+      role: "admin"
+    };
+
+    users.push(newUser);
+    localStorage.setItem("mgt_users", JSON.stringify(users));
+    return newUser;
   },
 
   getAllStays() {

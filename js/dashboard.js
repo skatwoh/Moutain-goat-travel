@@ -3,10 +3,24 @@
 
 const MGTDashboard = {
   init() {
-    this.bindEvents();
+    this.checkAccess();
+    if (!this.eventsBound) {
+      this.bindEvents();
+      this.eventsBound = true;
+    }
     this.renderBookings();
     this.renderWishlist();
     this.renderStats();
+    this.renderAdmins();
+  },
+
+  checkAccess() {
+    const user = window.MountainGoatDB.getCurrentUser();
+    const hash = window.location.hash;
+    if (hash === '#dashboard' && !user) {
+      window.location.hash = '#home';
+      if (window.MGTBooking) window.MGTBooking.showToast("Vui lòng đăng nhập để truy cập trang này!", "error");
+    }
   },
 
   bindEvents() {
@@ -43,6 +57,15 @@ const MGTDashboard = {
         this.createNewListing();
       });
     }
+
+    // Create admin form submit
+    const createAdminForm = document.getElementById('create-admin-form');
+    if (createAdminForm) {
+      createAdminForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleCreateAdmin();
+      });
+    }
   },
 
   switchTab(tabId, buttonElement) {
@@ -63,6 +86,7 @@ const MGTDashboard = {
     if (tabId === 'user-bookings') this.renderBookings();
     if (tabId === 'user-wishlist') this.renderWishlist();
     if (tabId === 'host-stats') this.renderStats();
+    if (tabId === 'admin-users') this.renderAdmins();
   },
 
   renderBookings() {
@@ -321,6 +345,12 @@ const MGTDashboard = {
   },
 
   createNewListing() {
+    const user = window.MountainGoatDB.getCurrentUser();
+    if (!user) {
+      if (window.MGTBooking) window.MGTBooking.showToast("Bạn cần đăng nhập để thực hiện chức năng này!", "error");
+      return;
+    }
+
     const type = document.getElementById('list-type').value;
     const category = document.getElementById('list-category').value.trim();
     const name = document.getElementById('list-name').value.trim();
@@ -350,11 +380,12 @@ const MGTDashboard = {
       description: desc,
       images: [image],
       owner: {
-        name: "Chủ nhà Tôi",
+        name: user.name,
         avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80",
-        badge: "Thành viên mới"
+        badge: user.role === 'superadmin' ? "Quản trị viên" : "Chủ nhà"
       },
-      featured: false
+      featured: false,
+      authorId: user.id
     };
 
     if (type === "stay") {
@@ -391,6 +422,54 @@ const MGTDashboard = {
       // Redirect to section listings
       window.location.hash = `#${type}s`;
     }, 400);
+  },
+
+  handleCreateAdmin() {
+    const name = document.getElementById('admin-name').value;
+    const email = document.getElementById('admin-email').value;
+    const password = document.getElementById('admin-password').value;
+
+    try {
+      window.MountainGoatDB.createAdmin({ name, email, password });
+      if (window.MGTBooking) window.MGTBooking.showToast("Tạo tài khoản admin thành công!", "success");
+      document.getElementById('create-admin-form').reset();
+      this.renderAdmins();
+    } catch (error) {
+      if (window.MGTBooking) window.MGTBooking.showToast(error.message, "error");
+    }
+  },
+
+  renderAdmins() {
+    const container = document.getElementById('admin-users-list');
+    if (!container) return;
+
+    const users = window.MountainGoatDB.getUsers();
+
+    if (users.length === 0) {
+      container.innerHTML = `<p style="color: var(--text-muted);">Chưa có tài khoản nào.</p>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <thead>
+          <tr style="text-align: left; border-bottom: 2px solid var(--border);">
+            <th style="padding: 10px;">Họ tên</th>
+            <th style="padding: 10px;">Email</th>
+            <th style="padding: 10px;">Vai trò</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${users.map(u => `
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 10px;">${u.name}</td>
+              <td style="padding: 10px;">${u.email}</td>
+              <td style="padding: 10px;"><span class="status-badge ${u.role === 'superadmin' ? 'upcoming' : 'completed'}">${u.role}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
   }
 };
 

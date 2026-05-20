@@ -9,6 +9,7 @@ const MGTApp = {
     this.initTheme();
     this.initRouting();
     this.bindEvents();
+    this.updateAuthUI();
     
     // Core renders
     this.renderFeatured();
@@ -102,13 +103,14 @@ const MGTApp = {
     // Theme Toggle
     document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
 
-    // Fast Link to Host Mode
+    // Auth Button click
     document.getElementById('host-mode-btn').addEventListener('click', () => {
-      window.location.hash = '#dashboard';
-      setTimeout(() => {
-        const hostBtn = document.getElementById('dash-menu-host-stats');
-        if (hostBtn) hostBtn.click();
-      }, 100);
+      const user = window.MountainGoatDB.getCurrentUser();
+      if (user) {
+        window.location.hash = '#dashboard';
+      } else {
+        document.getElementById('login-modal').classList.add('active');
+      }
     });
 
     // Close Modals events
@@ -117,6 +119,15 @@ const MGTApp = {
     });
     document.getElementById('btn-close-checkout').addEventListener('click', () => {
       document.getElementById('checkout-modal').classList.remove('active');
+    });
+    document.getElementById('btn-close-login').addEventListener('click', () => {
+      document.getElementById('login-modal').classList.remove('active');
+    });
+    document.getElementById('btn-close-contact').addEventListener('click', () => {
+      document.getElementById('contact-modal').classList.remove('active');
+    });
+    document.getElementById('btn-close-contact-action').addEventListener('click', () => {
+      document.getElementById('contact-modal').classList.remove('active');
     });
 
     // Stays filter listeners
@@ -198,6 +209,15 @@ const MGTApp = {
 
     // Submit review form
     document.getElementById('btn-submit-review').addEventListener('click', () => this.submitReview());
+
+    // Login Form Submit
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleLogin();
+      });
+    }
   },
 
   executeHeroSearch() {
@@ -510,7 +530,7 @@ const MGTApp = {
     if (window.MGTBooking) {
       const calculation = window.MGTBooking.calculateCost(this.currentProduct, params);
       const btn = document.getElementById('btn-trigger-checkout');
-      btn.innerText = `ĐẶT NGAY - ${window.MGTBooking.formatVND(calculation.total)}`;
+      btn.innerText = `LIÊN HỆ - ${window.MGTBooking.formatVND(calculation.total)}`;
     }
   },
 
@@ -544,27 +564,66 @@ const MGTApp = {
   },
 
   triggerCheckout() {
-    if (!this.currentProduct) return;
-    
-    const params = this.getBookingParameters();
+    // Open Contact Modal instead of Booking Wizard
+    document.getElementById('contact-modal').classList.add('active');
+  },
 
-    // Simple date range check for stays
-    if (this.currentProduct.type === 'stay') {
-      const start = new Date(params.startDate);
-      const end = new Date(params.endDate);
-      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        if (window.MGTBooking) window.MGTBooking.showToast("Vui lòng chọn ngày nhận/trả phòng hợp lệ!", "error");
-        return;
-      }
-      if (end <= start) {
-        if (window.MGTBooking) window.MGTBooking.showToast("Ngày trả phòng phải sau ngày nhận phòng!", "error");
-        return;
-      }
+  handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    const user = window.MountainGoatDB.login(email, password);
+    if (user) {
+      if (window.MGTBooking) window.MGTBooking.showToast("Đăng nhập thành công!", "success");
+      document.getElementById('login-modal').classList.remove('active');
+      this.updateAuthUI();
+      window.location.hash = '#dashboard';
+      if (window.MGTDashboard) window.MGTDashboard.init();
+    } else {
+      if (window.MGTBooking) window.MGTBooking.showToast("Email hoặc mật khẩu không chính xác!", "error");
     }
+  },
 
-    // Launch checkout wizard
-    if (window.MGTBooking) {
-      window.MGTBooking.openCheckout(this.currentProduct, params);
+  handleLogout() {
+    window.MountainGoatDB.logout();
+    if (window.MGTBooking) window.MGTBooking.showToast("Đã đăng xuất!", "info");
+    this.updateAuthUI();
+    if (window.location.hash === '#dashboard') {
+      window.location.hash = '#home';
+    }
+  },
+
+  updateAuthUI() {
+    const user = window.MountainGoatDB.getCurrentUser();
+    const authActions = document.getElementById('auth-actions');
+    const hostBtn = document.getElementById('host-mode-btn');
+
+    if (user) {
+      hostBtn.innerText = 'Bảng điều khiển';
+
+      // Add Logout button if not exists
+      if (!document.getElementById('logout-btn')) {
+        const logoutBtn = document.createElement('button');
+        logoutBtn.id = 'logout-btn';
+        logoutBtn.className = 'btn-primary';
+        logoutBtn.style.padding = '8px 16px';
+        logoutBtn.innerText = 'Đăng xuất';
+        logoutBtn.addEventListener('click', () => this.handleLogout());
+        authActions.appendChild(logoutBtn);
+      }
+
+      // Show admin only menu items if superadmin
+      const adminOnlyMenu = document.getElementById('menu-item-admin-only');
+      if (adminOnlyMenu) {
+        adminOnlyMenu.style.display = user.role === 'superadmin' ? 'block' : 'none';
+      }
+    } else {
+      hostBtn.innerText = 'Đăng nhập';
+      const logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) logoutBtn.remove();
+
+      const adminOnlyMenu = document.getElementById('menu-item-admin-only');
+      if (adminOnlyMenu) adminOnlyMenu.style.display = 'none';
     }
   },
 
