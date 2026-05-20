@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mountain Goat Travel - Homestay, Phòng & Tour Trải Nghiệm Cao Cấp</title>
+  <meta name="description" content="Hệ thống đặt phòng homestay, phòng nghỉ dưỡng và tour trekking khám phá thiên nhiên hoang sơ của Mountain Goat Travel.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Floating Toast Notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Header Navigation -->
+  <header id="main-header">
+    <div class="nav-container">
+      <a href="#home" class="logo" id="btn-logo">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+        <span>Mountain Goat</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-link active" data-target="home">Trang Chủ</a></li>
+        <li><a href="#stays" class="nav-link" data-target="stays">Homestays & Phòng</a></li>
+        <li><a href="#tours" class="nav-link" data-target="tours">Tours Trải Nghiệm</a></li>
+        <li><a href="#dashboard" class="nav-link" data-target="dashboard">Quản Lý Đặt Chỗ</a></li>
+      </ul>
+      <div class="nav-actions">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="icon-btn" title="Đổi giao diện">
+          <svg id="theme-icon-sun" class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none; width: 20px; height: 20px;">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="theme-icon-moon" class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <!-- Host Dashboard Fast Link -->
+        <button id="host-mode-btn" class="btn-secondary">Góc Chủ Nhà</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main>
+
+    <!-- 1. HOME SECTION -->
+    <section id="section-home" class="page-section active">
+      <div class="hero-section" style="background-image: url('assets/hero_mountain.png');">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <h1>Chinh phục đỉnh cao<br>Trọn vẹn trải nghiệm</h1>
+          <p>Mạng lưới homestay bản địa mộc mạc và các cung trekking thử thách kỳ vĩ nhất Việt Nam cùng Mountain Goat.</p>
+          
+          <!-- Floating Search Widget -->
+          <div class="search-widget">
+            <div class="search-tabs">
+              <button class="search-tab active" data-type="stay">Homestay & Phòng</button>
+              <button class="search-tab" data-type="tour">Tours Bản Địa</button>
+            </div>
+            <div class="search-grid">
+              <div class="search-field">
+                <label>Điểm đến</label>
+                <div class="search-input-wrapper">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <input type="text" id="search-dest" placeholder="Sapa, Đà Lạt, Hà Giang...">
+                </div>
+              </div>
+              <div class="search-field" id="search-date-field">
+                <label>Ngày đến - Ngày đi</label>
+                <div class="search-input-wrapper">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <input type="date" id="search-date-in" placeholder="Chọn ngày">
+                </div>
+              </div>
+              <div class="search-field">
+                <label>Số người</label>
+                <div class="search-input-wrapper">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <select id="search-guests">
+                    <option value="1">1 người</option>
+                    <option value="2" selected>2 người</option>
+                    <option value="3">3 người</option>
+                    <option value="4">4 người+</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn-accent" id="btn-hero-search" style="padding: 14px; justify-content: center;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Featured Items on Home -->
+      <div class="container">
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Gợi Ý Nổi Bật</h2>
+            <p>Trải nghiệm được du khách đánh giá cao nhất</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-secondary" onclick="window.location.hash='#stays'">Xem Tất Cả Phòng</button>
+            <button class="btn-primary" onclick="window.location.hash='#tours'">Xem Tất Cả Tours</button>
+          </div>
+        </div>
+        <div class="listings-grid" id="home-featured-grid">
+          <!-- Dynamic rendering -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. STAYS SECTION -->
+    <section id="section-stays" class="page-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Homestays & Phòng Nghỉ Dưỡng</h2>
+            <p>Nơi cư trú bình yên giữa lòng núi đồi hoang sơ</p>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label for="stay-loc-filter">Vị trí:</label>
+            <select id="stay-loc-filter" class="filter-select">
+              <option value="all">Tất cả điểm đến</option>
+              <option value="Sa Pa">Sa Pa, Lào Cai</option>
+              <option value="Đà Lạt">Đà Lạt, Lâm Đồng</option>
+              <option value="Ninh Bình">Ninh Bình</option>
+              <option value="Mộc Châu">Mộc Châu, Sơn La</option>
+              <option value="Y Tý">Y Tý, Lào Cai</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="stay-price-filter">Giá tối đa:</label>
+            <div class="price-range-wrapper">
+              <input type="range" id="stay-price-filter" min="500000" max="3000000" step="100000" value="3000000">
+              <span class="price-val" id="stay-price-val">3,000,000đ</span>
+            </div>
+          </div>
+          <div class="filter-group" style="margin-left: auto;">
+            <label for="stay-sort">Sắp xếp:</label>
+            <select id="stay-sort" class="filter-select">
+              <option value="rating">Đánh giá tốt nhất</option>
+              <option value="price-asc">Giá từ thấp đến cao</option>
+              <option value="price-desc">Giá từ cao đến thấp</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="listings-grid" id="stays-list-grid">
+          <!-- Dynamic Stays -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. TOURS SECTION -->
+    <section id="section-tours" class="page-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Tours Thám Hiểm & Trải Nghiệm</h2>
+            <p>Bứt phá giới hạn bản thân, khám phá vẻ đẹp kỳ vĩ</p>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label for="tour-diff-filter">Độ khó:</label>
+            <select id="tour-diff-filter" class="filter-select">
+              <option value="all">Tất cả cấp độ</option>
+              <option value="Dễ">Dễ (Dạo bộ dã ngoại)</option>
+              <option value="Vừa">Vừa (Đồi dốc trung bình)</option>
+              <option value="Khó">Khó (Đá dựng đứng, hiểm trở)</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="tour-price-filter">Giá tối đa:</label>
+            <div class="price-range-wrapper">
+              <input type="range" id="tour-price-filter" min="2000000" max="6000000" step="200000" value="6000000">
+              <span class="price-val" id="tour-price-val">6,000,000đ</span>
+            </div>
+          </div>
+          <div class="filter-group" style="margin-left: auto;">
+            <label for="tour-sort">Sắp xếp:</label>
+            <select id="tour-sort" class="filter-select">
+              <option value="rating">Yêu thích nhất</option>
+              <option value="price-asc">Giá thấp đến cao</option>
+              <option value="price-desc">Giá cao đến thấp</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="listings-grid" id="tours-list-grid">
+          <!-- Dynamic Tours -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. DASHBOARD SECTION -->
+    <section id="section-dashboard" class="page-section">
+      <div class="container">
+        <div class="dashboard-layout">
+          <!-- Sidebar Menu -->
+          <aside class="dash-sidebar">
+            <ul class="dash-menu">
+              <li>
+                <button class="dash-menu-item active" data-tab="user-bookings">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                  Đơn Đặt Của Tôi
+                </button>
+              </li>
+              <li>
+                <button class="dash-menu-item" data-tab="user-wishlist">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  Yêu Thích
+                </button>
+              </li>
+              <li class="divider" style="margin: 10px 0; border-top: 1px solid var(--border);"></li>
+              <li>
+                <button class="dash-menu-item" id="dash-menu-host-stats" data-tab="host-stats">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="21" y1="12" x2="3" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                  Thống Kê Doanh Thu
+                </button>
+              </li>
+              <li>
+                <button class="dash-menu-item" id="dash-menu-host-listing" data-tab="host-listing">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Đăng Tin Mới
+                </button>
+              </li>
+            </ul>
+          </aside>
+
+          <!-- Dynamic Panel Content -->
+          <div class="dash-content">
+            
+            <!-- Panel 1: User Bookings -->
+            <div id="dash-user-bookings" class="dash-content-block active">
+              <h3 class="summary-title" style="border:none; margin-bottom: 20px; font-size: 1.5rem;">Lịch sử đặt Stay & Tour</h3>
+              <div class="booking-history-list" id="user-bookings-container">
+                <!-- Dynamic user reservations -->
+              </div>
+            </div>
+
+            <!-- Panel 2: User Wishlist -->
+            <div id="dash-user-wishlist" class="dash-content-block">
+              <h3 class="summary-title" style="border:none; margin-bottom: 20px; font-size: 1.5rem;">Danh sách yêu thích</h3>
+              <div class="listings-grid" id="user-wishlist-container">
+                <!-- Dynamic wishlist items -->
+              </div>
+            </div>
+
+            <!-- Panel 3: Host Revenue Stats -->
+            <div id="dash-host-stats" class="dash-content-block">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+                <h3 style="font-family: var(--font-display); font-size: 1.5rem;">Báo Cáo Doanh Thu Chủ Nhà</h3>
+                <span class="status-badge upcoming">Chế độ Host hoạt động</span>
+              </div>
+              <div class="host-stats-grid">
+                <div class="stat-box">
+                  <span class="stat-label">Doanh thu ước tính</span>
+                  <div class="stat-val" id="host-stat-revenue">0đ</div>
+                  <span class="stat-change">↑ 12.4% so với tháng trước</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Số lượt đặt thành công</span>
+                  <div class="stat-val" id="host-stat-bookings">0</div>
+                  <span class="stat-change">Ổn định</span>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Tỷ lệ lấp phòng trung bình</span>
+                  <div class="stat-val" id="host-stat-occupancy">82.5%</div>
+                  <span class="stat-change">↑ 4.2% so với quý I</span>
+                </div>
+              </div>
+
+              <!-- SVG Interactive Revenue Chart -->
+              <div class="chart-wrapper">
+                <div class="chart-header">
+                  <div class="chart-title">Thống Kê Doanh Thu Tuần Gần Nhất (VND)</div>
+                  <span style="font-size:0.8rem; color:var(--text-muted);">Đơn vị: Triệu đồng</span>
+                </div>
+                <svg id="revenue-chart" class="chart-svg" viewBox="0 0 600 250">
+                  <!-- Dynamic SVG elements drawn by JS -->
+                </svg>
+              </div>
+            </div>
+
+            <!-- Panel 4: Host Create Listing -->
+            <div id="dash-host-listing" class="dash-content-block">
+              <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 25px;">Thêm Tin Cho Thuê Hoặc Tour Mới</h3>
+              <form id="new-listing-form" class="form-grid">
+                <div class="form-group">
+                  <label for="list-type">Loại hình sản phẩm</label>
+                  <select id="list-type" required>
+                    <option value="stay">Homestay / Phòng nghỉ</option>
+                    <option value="tour">Tour trekking / khám phá</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="list-category">Danh mục chi tiết</label>
+                  <input type="text" id="list-category" placeholder="Ví dụ: Homestay Premium, Trekking Mạo Hiểm" required>
+                </div>
+                <div class="form-group full-width">
+                  <label for="list-name">Tiêu đề tin đăng</label>
+                  <input type="text" id="list-name" placeholder="Ví dụ: Sa Pa Valley View Bungalow..." required>
+                </div>
+                <div class="form-group">
+                  <label for="list-price">Đơn giá (VND / đêm hoặc khách)</label>
+                  <input type="number" id="list-price" min="100000" placeholder="Đơn vị: VNĐ" required>
+                </div>
+                <div class="form-group">
+                  <label for="list-location">Địa điểm</label>
+                  <input type="text" id="list-location" placeholder="Ví dụ: Tả Van, Sa Pa" required>
+                </div>
+                <div class="form-group" id="group-guests">
+                  <label for="list-guests">Số lượng khách tối đa</label>
+                  <input type="number" id="list-guests" min="1" value="2">
+                </div>
+                <div class="form-group" id="group-difficulty" style="display:none;">
+                  <label for="list-difficulty">Độ khó của Tour</label>
+                  <select id="list-difficulty">
+                    <option value="Dễ">Dễ</option>
+                    <option value="Vừa">Vừa</option>
+                    <option value="Khó">Khó</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="list-image">Liên kết hình ảnh (hoặc dùng mặc định)</label>
+                  <select id="list-image">
+                    <option value="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?auto=format&fit=crop&w=800&q=80">Sapa Bungalow Style</option>
+                    <option value="https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=800&q=80">Dalat Cabin Style</option>
+                    <option value="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80">Fansipan Trekking Style</option>
+                    <option value="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80">Ninh Binh Green Style</option>
+                  </select>
+                </div>
+                <div class="form-group full-width">
+                  <label for="list-desc">Mô tả chi tiết</label>
+                  <textarea id="list-desc" rows="4" placeholder="Mô tả không gian nghỉ dưỡng hoặc lộ trình tour..." required></textarea>
+                </div>
+                <div class="form-group full-width">
+                  <button type="submit" class="btn-primary" style="justify-content: center; padding: 12px 0;">Đăng Tin Ngay</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: STAY / TOUR DETAIL -->
+  <div id="detail-modal" class="modal-overlay">
+    <div class="modal-wrapper">
+      <button class="modal-close" id="btn-close-detail" title="Đóng">&times;</button>
+      <div class="detail-grid">
+        
+        <!-- Left Side: Gallery & Info -->
+        <div class="detail-main">
+          <div class="detail-gallery">
+            <img class="gallery-main" id="modal-gallery-img" src="" alt="Main Gallery Image">
+            <div class="gallery-thumbs" id="modal-gallery-thumbs">
+              <!-- Dynamically rendered tiny thumbnails -->
+            </div>
+          </div>
+          <h2 class="detail-title" id="modal-detail-title">Tên Phòng / Tour</h2>
+          <div class="card-location" id="modal-detail-loc" style="margin-bottom: 15px;">
+            <!-- Loc -->
+          </div>
+          <p class="detail-desc" id="modal-detail-desc">Mô tả đầy đủ chi tiết sẽ được đổ vào đây bằng javascript.</p>
+          
+          <!-- Special characteristics (e.g. amenities for rooms, itineraries for tours) -->
+          <div id="modal-spec-container">
+            <!-- Amenities or Itinerary dynamic markup -->
+          </div>
+
+          <!-- Interactive Review list inside Details -->
+          <div class="reviews-section">
+            <div class="reviews-header">
+              <h3>Đánh Giá Khách Hàng (<span id="modal-rev-count">0</span>)</h3>
+              <div class="card-rating" id="modal-rev-avg" style="font-size:1.1rem;">★ 0.0</div>
+            </div>
+            <div class="reviews-list" id="modal-reviews-list">
+              <!-- Reviews rows -->
+            </div>
+            
+            <!-- Submit Review Form -->
+            <div class="review-form">
+              <h4>Viết Đánh Giá Của Bạn</h4>
+              <div class="review-rating-select" id="star-rating-selector">
+                <span class="star-input active" data-rating="1">★</span>
+                <span class="star-input active" data-rating="2">★</span>
+                <span class="star-input active" data-rating="3">★</span>
+                <span class="star-input active" data-rating="4">★</span>
+                <span class="star-input active" data-rating="5">★</span>
+              </div>
+              <textarea id="review-comment-input" placeholder="Chia sẻ trải nghiệm thực tế của bạn..." required></textarea>
+              <button class="btn-primary" id="btn-submit-review">Gửi Đánh Giá</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Booking Calculation Panel -->
+        <div class="detail-sidebar">
+          <div class="sidebar-sticky-box">
+            <div class="price-calc-row">
+              <span class="price-label">Giá chuẩn</span>
+              <div>
+                <span class="amt" id="modal-sidebar-price">0đ</span>
+                <span class="price-unit" id="modal-sidebar-unit">/đêm</span>
+              </div>
+            </div>
+
+            <!-- Calculated Booking fields -->
+            <div class="sidebar-fields">
+              <div class="sidebar-field" id="field-booking-dates">
+                <label id="date-label-start">Ngày Nhận Phòng</label>
+                <input type="date" id="book-date-start" required>
+                <label id="date-label-end" style="margin-top: 10px;">Ngày Trả Phòng</label>
+                <input type="date" id="book-date-end" required>
+              </div>
+              
+              <div class="sidebar-field" id="field-tour-date" style="display:none;">
+                <label>Ngày Khởi Hành</label>
+                <select id="book-tour-date">
+                  <!-- Dynamically populated dates -->
+                </select>
+              </div>
+
+              <div class="sidebar-field">
+                <label>Số Lượng Khách</label>
+                <input type="number" id="book-guests-count" min="1" max="10" value="2">
+              </div>
+
+              <div class="sidebar-field">
+                <label>Dịch vụ tùy chọn đi kèm</label>
+                <div class="services-checkboxes" id="book-extra-services">
+                  <!-- Checkbox lists based on type -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Instant Book Action -->
+            <button class="btn-accent" id="btn-trigger-checkout" style="width:100%; justify-content:center; padding:12px;">ĐẶT NGAY</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BOOKING / CHECKOUT WIZARD -->
+  <div id="checkout-modal" class="modal-overlay">
+    <div class="modal-wrapper" style="max-width: 680px;">
+      <button class="modal-close" id="btn-close-checkout" title="Đóng">&times;</button>
+      
+      <div style="padding:30px;">
+        <!-- Wizard Navigation -->
+        <div class="wizard-steps">
+          <div class="wizard-step-node active" id="node-step-1">
+            <span class="node-num">1</span> Chi tiết đặt
+          </div>
+          <div class="wizard-step-node" id="node-step-2">
+            <span class="node-num">2</span> Thông tin liên lạc
+          </div>
+          <div class="wizard-step-node" id="node-step-3">
+            <span class="node-num">3</span> Thanh toán
+          </div>
+        </div>
+
+        <form id="checkout-wizard-form">
+          <!-- WIZARD STEP 1: SUMMARY -->
+          <div class="wizard-content active" id="wizard-step-1-content">
+            <h3 class="summary-title" style="border:none; margin-bottom: 20px;">Xác nhận chi tiết dịch vụ</h3>
+            <div class="booking-summary-box">
+              <h4 id="checkout-summary-name" style="font-family: var(--font-display); font-size:1.15rem; color:var(--primary); margin-bottom: 15px;">Dịch vụ</h4>
+              <div class="summary-row"><span class="label">Đơn giá gốc</span><span id="summary-base-price">0đ</span></div>
+              <div class="summary-row"><span class="label" id="summary-duration-label">Thời lượng</span><span id="summary-duration-val">0 đêm</span></div>
+              <div class="summary-row"><span class="label">Số lượng khách</span><span id="summary-guests-val">0 người</span></div>
+              <div class="summary-row" id="summary-addons-row"><span class="label">Tiện ích đi kèm</span><span id="summary-addons-val">0đ</span></div>
+              <div class="summary-row total"><span class="label">Tổng cộng cần thanh toán</span><span id="summary-total-val">0đ</span></div>
+            </div>
+            <div class="wizard-actions">
+              <span></span> <!-- Spacer -->
+              <button type="button" class="btn-primary" id="btn-wizard-next-1">Tiếp tục</button>
+            </div>
+          </div>
+
+          <!-- WIZARD STEP 2: CUSTOMER DETAIL -->
+          <div class="wizard-content" id="wizard-step-2-content">
+            <h3 class="summary-title" style="border:none; margin-bottom: 20px;">Thông tin khách hàng đại diện</h3>
+            <div class="form-grid" style="grid-template-columns: 1fr;">
+              <div class="form-group">
+                <label for="cust-fullname">Họ tên đầy đủ</label>
+                <input type="text" id="cust-fullname" placeholder="Nguyễn Văn A" required>
+              </div>
+              <div class="form-group">
+                <label for="cust-phone">Số điện thoại liên lạc</label>
+                <input type="tel" id="cust-phone" placeholder="0901234567" required>
+              </div>
+              <div class="form-group">
+                <label for="cust-email">Địa chỉ Email</label>
+                <input type="email" id="cust-email" placeholder="example@gmail.com" required>
+              </div>
+              <div class="form-group">
+                <label for="cust-note">Yêu cầu đặc biệt (tùy chọn)</label>
+                <textarea id="cust-note" rows="2" placeholder="Ví dụ: Ăn chay, checkin sớm, xe máy tay ga..."></textarea>
+              </div>
+            </div>
+            <div class="wizard-actions">
+              <button type="button" class="btn-secondary" id="btn-wizard-back-2">Quay lại</button>
+              <button type="button" class="btn-primary" id="btn-wizard-next-2">Tiếp tục</button>
+            </div>
+          </div>
+
+          <!-- WIZARD STEP 3: PAYMENT METHOD -->
+          <div class="wizard-content" id="wizard-step-3-content">
+            <h3 class="summary-title" style="border:none; margin-bottom: 20px;">Hình thức thanh toán</h3>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+              <div style="display:flex; gap: 15px;">
+                <label class="service-check">
+                  <input type="radio" name="pay-method" value="card" checked> Thẻ Quốc Tế (Visa/Mastercard)
+                </label>
+                <label class="service-check">
+                  <input type="radio" name="pay-method" value="qr"> Chuyển khoản QR Ngân hàng
+                </label>
+              </div>
+            </div>
+
+            <div class="payment-grid">
+              <!-- Left side layout -->
+              <div class="payment-inputs">
+                
+                <!-- Visa Form fields -->
+                <div id="payment-card-fields">
+                  <div class="form-group">
+                    <label for="card-num-input">Số thẻ</label>
+                    <input type="text" id="card-num-input" placeholder="4111 2222 3333 4444" maxlength="19" required>
+                  </div>
+                  <div style="display:flex; gap: 10px;">
+                    <div class="form-group" style="flex:1;">
+                      <label for="card-exp-input">Hạn sử dụng</label>
+                      <input type="text" id="card-exp-input" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                      <label for="card-cvv-input">CVV</label>
+                      <input type="text" id="card-cvv-input" placeholder="123" maxlength="3" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="card-name-input">Tên trên thẻ</label>
+                    <input type="text" id="card-name-input" placeholder="NGUYEN VAN A" required style="text-transform: uppercase;">
+                  </div>
+                </div>
+
+                <!-- QR code fields -->
+                <div id="payment-qr-fields" style="display:none; width: 100%;">
+                  <p style="font-size: 0.85rem; color:var(--text-muted); margin-bottom: 15px;">Quét mã QR dưới đây bằng app Ngân hàng để thanh toán tự động.</p>
+                  <div class="bank-details">
+                    <div class="bank-row"><span>Ngân hàng</span><strong>Vietcombank (VCB)</strong></div>
+                    <div class="bank-row"><span>Số tài khoản</span><strong>1028394857</strong></div>
+                    <div class="bank-row"><span>Chủ tài khoản</span><strong>MOUNTAIN GOAT TRAVEL CO.</strong></div>
+                    <div class="bank-row"><span>Số tiền chuyển</span><strong id="qr-bank-amount">0đ</strong></div>
+                    <div class="bank-row"><span>Nội dung chuyển</span><strong id="qr-bank-memo">MGT-29482</strong></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Right side layout (Preview) -->
+              <div class="payment-preview">
+                
+                <!-- 3D Flippable Credit Card -->
+                <div class="card-wrapper-3d" id="payment-visual-card-wrapper">
+                  <div class="visual-card" id="visual-card-element">
+                    <!-- Front side -->
+                    <div class="card-front">
+                      <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-family:var(--font-display); font-weight:700; font-style:italic;">Visa</span>
+                        <div class="card-chip"></div>
+                      </div>
+                      <div class="card-number-vis" id="vis-card-number">•••• •••• •••• ••••</div>
+                      <div class="card-meta-vis">
+                        <div>
+                          <div style="font-size:0.6rem; opacity:0.7;">CHỦ THẺ</div>
+                          <div class="card-name-vis" id="vis-card-name">NGUYỄN VĂN A</div>
+                        </div>
+                        <div>
+                          <div style="font-size:0.6rem; opacity:0.7;">HẠN DÙNG</div>
+                          <div class="card-exp-vis" id="vis-card-exp">MM/YY</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Back side -->
+                    <div class="card-back">
+                      <div class="card-strip"></div>
+                      <div class="card-signature-box">
+                        <span class="card-cvv-vis" id="vis-card-cvv">•••</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- QR Code Box -->
+                <div class="bank-qr-box" id="payment-visual-qr-wrapper" style="display:none;">
+                  <div class="qr-code-img">
+                    <svg viewBox="0 0 100 100" style="width:100%; height:100%;">
+                      <!-- Artistic simulated SVG QR code -->
+                      <rect width="100" height="100" fill="#fff"/>
+                      <rect width="25" height="25" fill="#224b37"/>
+                      <rect x="5" y="5" width="15" height="15" fill="#fff"/>
+                      <rect x="9" y="9" width="7" height="7" fill="#224b37"/>
+                      
+                      <rect x="75" y="0" width="25" height="25" fill="#224b37"/>
+                      <rect x="80" y="5" width="15" height="15" fill="#fff"/>
+                      <rect x="84" y="9" width="7" height="7" fill="#224b37"/>
+                      
+                      <rect x="0" y="75" width="25" height="25" fill="#224b37"/>
+                      <rect x="5" y="80" width="15" height="15" fill="#fff"/>
+                      <rect x="9" y="84" width="7" height="7" fill="#224b37"/>
+                      
+                      <rect x="35" y="35" width="30" height="30" fill="#224b37"/>
+                      <rect x="40" y="40" width="20" height="20" fill="#fff"/>
+                      
+                      <rect x="30" y="10" width="10" height="15" fill="#f59e0b"/>
+                      <rect x="15" y="30" width="15" height="10" fill="#224b37"/>
+                      <rect x="45" y="15" width="20" height="8" fill="#224b37"/>
+                      <rect x="70" y="35" width="15" height="15" fill="#f59e0b"/>
+                      <rect x="80" y="60" width="10" height="25" fill="#224b37"/>
+                      <rect x="40" y="75" width="25" height="15" fill="#224b37"/>
+                      <rect x="65" y="85" width="15" height="10" fill="#f59e0b"/>
+                    </svg>
+                  </div>
+                  <span style="font-size:0.75rem; color:var(--text-muted);">Quét để thanh toán bằng MoMo / Mobile Banking</span>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <button type="button" class="btn-secondary" id="btn-wizard-back-3">Quay lại</button>
+              <button type="submit" class="btn-accent" id="btn-wizard-submit">Hoàn tất & Đặt phòng</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>Mountain Goat Travel</h3>
+        <p>Nhà tổ chức các tour trải nghiệm núi cao độc bản và cung cấp chỗ ở homestay bản địa chuẩn chất lượng hàng đầu tại Việt Nam. Đồng hành cùng phát triển du lịch cộng đồng bền vững.</p>
+      </div>
+      <div class="footer-links-col">
+        <h4>Về Chúng Tôi</h4>
+        <ul>
+          <li><a href="#home">Trang chủ</a></li>
+          <li><a href="#stays">Danh sách Homestay</a></li>
+          <li><a href="#tours">Danh sách Tours</a></li>
+          <li><a href="#dashboard">Bảng điều khiển</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-col">
+        <h4>Điểm Đến Hot</h4>
+        <ul>
+          <li><a href="#stays" onclick="document.getElementById('stay-loc-filter').value='Sa Pa'; document.getElementById('stay-loc-filter').dispatchEvent(new Event('change'));">Sa Pa - Lào Cai</a></li>
+          <li><a href="#stays" onclick="document.getElementById('stay-loc-filter').value='Đà Lạt'; document.getElementById('stay-loc-filter').dispatchEvent(new Event('change'));">Đà Lạt - Lâm Đồng</a></li>
+          <li><a href="#stays" onclick="document.getElementById('stay-loc-filter').value='Ninh Bình'; document.getElementById('stay-loc-filter').dispatchEvent(new Event('change'));">Tràng An - Ninh Bình</a></li>
+          <li><a href="#stays" onclick="document.getElementById('stay-loc-filter').value='Y Tý'; document.getElementById('stay-loc-filter').dispatchEvent(new Event('change'));">Y Tý - Bát Xát</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-col">
+        <h4>Liên Hệ</h4>
+        <ul>
+          <li>Email: hello@mountaingoat.vn</li>
+          <li>Hotline: 1900 6868</li>
+          <li>Địa chỉ: Thung lũng Tả Van, Sa Pa, Lào Cai</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Mountain Goat Travel. Thiết kế bởi Antigravity AI.</p>
+      <p>Điều khoản dịch vụ | Chính sách bảo mật</p>
+    </div>
+  </footer>
+
+  <!-- Import JS Scripts in order of dependency -->
+  <script src="js/data.js"></script>
+  <script src="js/booking.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
