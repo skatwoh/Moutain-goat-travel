@@ -8,7 +8,6 @@ const MGTDashboard = {
       this.bindEvents();
       this.eventsBound = true;
     }
-    this.renderBookings();
     this.renderWishlist();
     this.renderStats();
     this.renderAdmins();
@@ -83,7 +82,6 @@ const MGTDashboard = {
     }
 
     // Special renders when switching
-    if (tabId === 'user-bookings') this.renderBookings();
     if (tabId === 'user-wishlist') this.renderWishlist();
     if (tabId === 'host-stats') this.renderStats();
     if (tabId === 'admin-users') this.renderAdmins();

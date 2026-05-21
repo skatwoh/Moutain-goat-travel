@@ -117,9 +117,6 @@ const MGTApp = {
     document.getElementById('btn-close-detail').addEventListener('click', () => {
       document.getElementById('detail-modal').classList.remove('active');
     });
-    document.getElementById('btn-close-checkout').addEventListener('click', () => {
-      document.getElementById('checkout-modal').classList.remove('active');
-    });
     document.getElementById('btn-close-login').addEventListener('click', () => {
       document.getElementById('login-modal').classList.remove('active');
     });
@@ -179,10 +176,6 @@ const MGTApp = {
     // Hero Search Action Button
     document.getElementById('btn-hero-search').addEventListener('click', () => this.executeHeroSearch());
 
-    // Detail Sidebar calculation input listeners
-    document.getElementById('book-date-start').addEventListener('change', () => this.updateCostPreview());
-    document.getElementById('book-date-end').addEventListener('change', () => this.updateCostPreview());
-    document.getElementById('book-guests-count').addEventListener('change', () => this.updateCostPreview());
 
     // Trigger Checkout Button
     document.getElementById('btn-trigger-checkout').addEventListener('click', () => this.triggerCheckout());
@@ -432,29 +425,8 @@ const MGTApp = {
       <img src="${img}" alt="thumbnail" class="thumb ${idx === 0 ? 'active' : ''}" onclick="MGTApp.changeMainGalleryImage('${img}', this)">
     `).join('');
 
-    // Setup input dates defaults (Checkin today, Checkout tomorrow)
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    document.getElementById('book-date-start').value = today.toISOString().split('T')[0];
-    document.getElementById('book-date-end').value = tomorrow.toISOString().split('T')[0];
-    
-    // Toggle stays vs tours sidebar/extra service checklists fields
-    const datesFields = document.getElementById('field-booking-dates');
-    const tourDateField = document.getElementById('field-tour-date');
-    const extrasContainer = document.getElementById('book-extra-services');
-
+    // Toggle stays vs tours info displays
     if (item.type === "stay") {
-      datesFields.style.display = "block";
-      tourDateField.style.display = "none";
-      
-      extrasContainer.innerHTML = `
-        <label class="service-check"><input type="checkbox" value="bbq" onchange="MGTApp.updateCostPreview()"> Tiệc nướng BBQ (+250,000đ)</label>
-        <label class="service-check"><input type="checkbox" value="motorbike" onchange="MGTApp.updateCostPreview()"> Thuê xe máy (+150,000đ/ngày)</label>
-        <label class="service-check"><input type="checkbox" value="guide" onchange="MGTApp.updateCostPreview()"> HDV bản địa (+600,000đ/ngày)</label>
-      `;
-
       // Render Amenities checklist
       let amenitiesHTML = `
         <h3 style="font-family: var(--font-display); font-size:1.15rem; margin-bottom:12px;">Tiện Nghi Chỗ Ở</h3>
@@ -475,18 +447,6 @@ const MGTApp = {
       document.getElementById('modal-spec-container').innerHTML = amenitiesHTML;
 
     } else {
-      datesFields.style.display = "none";
-      tourDateField.style.display = "block";
-      
-      // Populate tour departure drop-downs
-      const tourDatesSelect = document.getElementById('book-tour-date');
-      tourDatesSelect.innerHTML = item.departureDates.map(d => `<option value="${d}">${d}</option>`).join('');
-
-      extrasContainer.innerHTML = `
-        <label class="service-check"><input type="checkbox" value="porter" onchange="MGTApp.updateCostPreview()"> Porter vác đồ (+350,000đ/khách)</label>
-        <label class="service-check"><input type="checkbox" value="camping" onchange="MGTApp.updateCostPreview()"> Lều trại cao cấp dã ngoại (+150,000đ/khách)</label>
-      `;
-
       // Render Itinerary Timeline list
       let itineraryHTML = `
         <h3 style="font-family: var(--font-display); font-size:1.15rem; margin-bottom:15px;">Lộ Trình Tour</h3>
@@ -508,8 +468,9 @@ const MGTApp = {
     // Load dynamic Reviews list for item
     this.renderModalReviews(itemId);
 
-    // Initial Cost Preview calculate
-    this.updateCostPreview();
+    // Initial button text
+    const btn = document.getElementById('btn-trigger-checkout');
+    btn.innerText = `LIÊN HỆ TƯ VẤN`;
 
     // Show Detail Modal
     document.getElementById('detail-modal').classList.add('active');
@@ -519,48 +480,6 @@ const MGTApp = {
     document.getElementById('modal-gallery-img').src = imgSrc;
     document.getElementById('modal-gallery-thumbs').querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
     thumbElement.classList.add('active');
-  },
-
-  updateCostPreview() {
-    if (!this.currentProduct) return;
-
-    // Collect parameters
-    const params = this.getBookingParameters();
-    
-    if (window.MGTBooking) {
-      const calculation = window.MGTBooking.calculateCost(this.currentProduct, params);
-      const btn = document.getElementById('btn-trigger-checkout');
-      btn.innerText = `LIÊN HỆ - ${window.MGTBooking.formatVND(calculation.total)}`;
-    }
-  },
-
-  getBookingParameters() {
-    const isStay = this.currentProduct.type === 'stay';
-    
-    let guests = parseInt(document.getElementById('book-guests-count').value, 10) || 1;
-    let startDate = "";
-    let endDate = "";
-
-    if (isStay) {
-      startDate = document.getElementById('book-date-start').value;
-      endDate = document.getElementById('book-date-end').value;
-    } else {
-      startDate = document.getElementById('book-tour-date').value;
-      endDate = startDate; // Same for single date tours
-    }
-
-    // Collect checkbox values
-    const checkedAddons = [];
-    document.querySelectorAll('#book-extra-services input[type="checkbox"]:checked').forEach(cb => {
-      checkedAddons.push(cb.value);
-    });
-
-    return {
-      startDate,
-      endDate,
-      guests,
-      extras: checkedAddons
-    };
   },
 
   triggerCheckout() {

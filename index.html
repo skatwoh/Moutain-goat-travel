@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mountain Goat Travel - Homestay, Phòng & Tour Trải Nghiệm Cao Cấp</title>
-  <meta name="description" content="Hệ thống đặt phòng homestay, phòng nghỉ dưỡng và tour trekking khám phá thiên nhiên hoang sơ của Mountain Goat Travel.">
+  <meta name="description" content="Khám phá các homestay, phòng nghỉ dưỡng và tour trekking kỳ vĩ cùng Mountain Goat Travel.">
   <link rel="icon" href="assets/logo_sharp.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -223,13 +223,7 @@
           <aside class="dash-sidebar">
             <ul class="dash-menu">
               <li>
-                <button class="dash-menu-item active" data-tab="user-bookings">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                  Đơn Đặt Của Tôi
-                </button>
-              </li>
-              <li>
-                <button class="dash-menu-item" data-tab="user-wishlist">
+                <button class="dash-menu-item active" data-tab="user-wishlist">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                   Yêu Thích
                 </button>
@@ -259,16 +253,8 @@
           <!-- Dynamic Panel Content -->
           <div class="dash-content">
             
-            <!-- Panel 1: User Bookings -->
-            <div id="dash-user-bookings" class="dash-content-block active">
-              <h3 class="summary-title" style="border:none; margin-bottom: 20px; font-size: 1.5rem;">Lịch sử đặt Stay & Tour</h3>
-              <div class="booking-history-list" id="user-bookings-container">
-                <!-- Dynamic user reservations -->
-              </div>
-            </div>
-
             <!-- Panel 2: User Wishlist -->
-            <div id="dash-user-wishlist" class="dash-content-block">
+            <div id="dash-user-wishlist" class="dash-content-block active">
               <h3 class="summary-title" style="border:none; margin-bottom: 20px; font-size: 1.5rem;">Danh sách yêu thích</h3>
               <div class="listings-grid" id="user-wishlist-container">
                 <!-- Dynamic wishlist items -->
@@ -288,9 +274,9 @@
                   <span class="stat-change">↑ 12.4% so với tháng trước</span>
                 </div>
                 <div class="stat-box">
-                  <span class="stat-label">Số lượt đặt thành công</span>
+                  <span class="stat-label">Số lượt quan tâm</span>
                   <div class="stat-val" id="host-stat-bookings">0</div>
-                  <span class="stat-change">Ổn định</span>
+                  <span class="stat-change">Từ form liên hệ</span>
                 </div>
                 <div class="stat-box">
                   <span class="stat-label">Tỷ lệ lấp phòng trung bình</span>
@@ -458,48 +444,33 @@
           </div>
         </div>
 
-        <!-- Right Side: Booking Calculation Panel -->
+        <!-- Right Side: Contact Panel -->
         <div class="detail-sidebar">
           <div class="sidebar-sticky-box">
-            <div class="price-calc-row">
-              <span class="price-label">Giá chuẩn</span>
+            <div class="price-calc-row" style="margin-bottom: 20px;">
+              <span class="price-label">Giá tham khảo</span>
               <div>
                 <span class="amt" id="modal-sidebar-price">0đ</span>
                 <span class="price-unit" id="modal-sidebar-unit">/đêm</span>
               </div>
             </div>
 
-            <!-- Calculated Booking fields -->
-            <div class="sidebar-fields">
-              <div class="sidebar-field" id="field-booking-dates">
-                <label id="date-label-start">Ngày Nhận Phòng</label>
-                <input type="date" id="book-date-start" required>
-                <label id="date-label-end" style="margin-top: 10px;">Ngày Trả Phòng</label>
-                <input type="date" id="book-date-end" required>
-              </div>
-              
-              <div class="sidebar-field" id="field-tour-date" style="display:none;">
-                <label>Ngày Khởi Hành</label>
-                <select id="book-tour-date">
-                  <!-- Dynamically populated dates -->
-                </select>
-              </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
+              Giá có thể thay đổi tùy theo thời điểm và số lượng khách. Vui lòng liên hệ để nhận báo giá chính xác nhất.
+            </p>
 
-              <div class="sidebar-field">
-                <label>Số Lượng Khách</label>
-                <input type="number" id="book-guests-count" min="1" max="10" value="2">
-              </div>
+            <button class="btn-accent" id="btn-trigger-checkout" style="width:100%; justify-content:center; padding:12px;">LIÊN HỆ TƯ VẤN</button>
 
-              <div class="sidebar-field">
-                <label>Dịch vụ tùy chọn đi kèm</label>
-                <div class="services-checkboxes" id="book-extra-services">
-                  <!-- Checkbox lists based on type -->
-                </div>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.9rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: var(--primary);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <span>Tư vấn 24/7</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 0.9rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: var(--primary);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <span>Hỗ trợ đặt vé, xe đưa đón</span>
               </div>
             </div>
-
-            <!-- Instant Book Action -->
-            <button class="btn-accent" id="btn-trigger-checkout" style="width:100%; justify-content:center; padding:12px;">LIÊN HỆ</button>
           </div>
         </div>
 
@@ -571,205 +542,6 @@
     </div>
   </div>
 
-  <!-- MODAL: BOOKING / CHECKOUT WIZARD -->
-  <div id="checkout-modal" class="modal-overlay">
-    <div class="modal-wrapper" style="max-width: 680px;">
-      <button class="modal-close" id="btn-close-checkout" title="Đóng">&times;</button>
-      
-      <div style="padding:30px;">
-        <!-- Wizard Navigation -->
-        <div class="wizard-steps">
-          <div class="wizard-step-node active" id="node-step-1">
-            <span class="node-num">1</span> Chi tiết đặt
-          </div>
-          <div class="wizard-step-node" id="node-step-2">
-            <span class="node-num">2</span> Thông tin liên lạc
-          </div>
-          <div class="wizard-step-node" id="node-step-3">
-            <span class="node-num">3</span> Thanh toán
-          </div>
-        </div>
-
-        <form id="checkout-wizard-form">
-          <!-- WIZARD STEP 1: SUMMARY -->
-          <div class="wizard-content active" id="wizard-step-1-content">
-            <h3 class="summary-title" style="border:none; margin-bottom: 20px;">Xác nhận chi tiết dịch vụ</h3>
-            <div class="booking-summary-box">
-              <h4 id="checkout-summary-name" style="font-family: var(--font-display); font-size:1.15rem; color:var(--primary); margin-bottom: 15px;">Dịch vụ</h4>
-              <div class="summary-row"><span class="label">Đơn giá gốc</span><span id="summary-base-price">0đ</span></div>
-              <div class="summary-row"><span class="label" id="summary-duration-label">Thời lượng</span><span id="summary-duration-val">0 đêm</span></div>
-              <div class="summary-row"><span class="label">Số lượng khách</span><span id="summary-guests-val">0 người</span></div>
-              <div class="summary-row" id="summary-addons-row"><span class="label">Tiện ích đi kèm</span><span id="summary-addons-val">0đ</span></div>
-              <div class="summary-row total"><span class="label">Tổng cộng cần thanh toán</span><span id="summary-total-val">0đ</span></div>
-            </div>
-            <div class="wizard-actions">
-              <span></span> <!-- Spacer -->
-              <button type="button" class="btn-primary" id="btn-wizard-next-1">Tiếp tục</button>
-            </div>
-          </div>
-
-          <!-- WIZARD STEP 2: CUSTOMER DETAIL -->
-          <div class="wizard-content" id="wizard-step-2-content">
-            <h3 class="summary-title" style="border:none; margin-bottom: 20px;">Thông tin khách hàng đại diện</h3>
-            <div class="form-grid" style="grid-template-columns: 1fr;">
-              <div class="form-group">
-                <label for="cust-fullname">Họ tên đầy đủ</label>
-                <input type="text" id="cust-fullname" placeholder="Nguyễn Văn A" required>
-              </div>
-              <div class="form-group">
-                <label for="cust-phone">Số điện thoại liên lạc</label>
-                <input type="tel" id="cust-phone" placeholder="0901234567" required>
-              </div>
-              <div class="form-group">
-                <label for="cust-email">Địa chỉ Email</label>
-                <input type="email" id="cust-email" placeholder="example@gmail.com" required>
-              </div>
-              <div class="form-group">
-                <label for="cust-note">Yêu cầu đặc biệt (tùy chọn)</label>
-                <textarea id="cust-note" rows="2" placeholder="Ví dụ: Ăn chay, checkin sớm, xe máy tay ga..."></textarea>
-              </div>
-            </div>
-            <div class="wizard-actions">
-              <button type="button" class="btn-secondary" id="btn-wizard-back-2">Quay lại</button>
-              <button type="button" class="btn-primary" id="btn-wizard-next-2">Tiếp tục</button>
-            </div>
-          </div>
-
-          <!-- WIZARD STEP 3: PAYMENT METHOD -->
-          <div class="wizard-content" id="wizard-step-3-content">
-            <h3 class="summary-title" style="border:none; margin-bottom: 20px;">Hình thức thanh toán</h3>
-            
-            <div class="form-group" style="margin-bottom: 20px;">
-              <div style="display:flex; gap: 15px;">
-                <label class="service-check">
-                  <input type="radio" name="pay-method" value="card" checked> Thẻ Quốc Tế (Visa/Mastercard)
-                </label>
-                <label class="service-check">
-                  <input type="radio" name="pay-method" value="qr"> Chuyển khoản QR Ngân hàng
-                </label>
-              </div>
-            </div>
-
-            <div class="payment-grid">
-              <!-- Left side layout -->
-              <div class="payment-inputs">
-                
-                <!-- Visa Form fields -->
-                <div id="payment-card-fields">
-                  <div class="form-group">
-                    <label for="card-num-input">Số thẻ</label>
-                    <input type="text" id="card-num-input" placeholder="4111 2222 3333 4444" maxlength="19" required>
-                  </div>
-                  <div style="display:flex; gap: 10px;">
-                    <div class="form-group" style="flex:1;">
-                      <label for="card-exp-input">Hạn sử dụng</label>
-                      <input type="text" id="card-exp-input" placeholder="MM/YY" maxlength="5" required>
-                    </div>
-                    <div class="form-group" style="flex:1;">
-                      <label for="card-cvv-input">CVV</label>
-                      <input type="text" id="card-cvv-input" placeholder="123" maxlength="3" required>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="card-name-input">Tên trên thẻ</label>
-                    <input type="text" id="card-name-input" placeholder="NGUYEN VAN A" required style="text-transform: uppercase;">
-                  </div>
-                </div>
-
-                <!-- QR code fields -->
-                <div id="payment-qr-fields" style="display:none; width: 100%;">
-                  <p style="font-size: 0.85rem; color:var(--text-muted); margin-bottom: 15px;">Quét mã QR dưới đây bằng app Ngân hàng để thanh toán tự động.</p>
-                  <div class="bank-details">
-                    <div class="bank-row"><span>Ngân hàng</span><strong>Vietcombank (VCB)</strong></div>
-                    <div class="bank-row"><span>Số tài khoản</span><strong>1028394857</strong></div>
-                    <div class="bank-row"><span>Chủ tài khoản</span><strong>MOUNTAIN GOAT TRAVEL CO.</strong></div>
-                    <div class="bank-row"><span>Số tiền chuyển</span><strong id="qr-bank-amount">0đ</strong></div>
-                    <div class="bank-row"><span>Nội dung chuyển</span><strong id="qr-bank-memo">MGT-29482</strong></div>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Right side layout (Preview) -->
-              <div class="payment-preview">
-                
-                <!-- 3D Flippable Credit Card -->
-                <div class="card-wrapper-3d" id="payment-visual-card-wrapper">
-                  <div class="visual-card" id="visual-card-element">
-                    <!-- Front side -->
-                    <div class="card-front">
-                      <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-family:var(--font-display); font-weight:700; font-style:italic;">Visa</span>
-                        <div class="card-chip"></div>
-                      </div>
-                      <div class="card-number-vis" id="vis-card-number">•••• •••• •••• ••••</div>
-                      <div class="card-meta-vis">
-                        <div>
-                          <div style="font-size:0.6rem; opacity:0.7;">CHỦ THẺ</div>
-                          <div class="card-name-vis" id="vis-card-name">NGUYỄN VĂN A</div>
-                        </div>
-                        <div>
-                          <div style="font-size:0.6rem; opacity:0.7;">HẠN DÙNG</div>
-                          <div class="card-exp-vis" id="vis-card-exp">MM/YY</div>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- Back side -->
-                    <div class="card-back">
-                      <div class="card-strip"></div>
-                      <div class="card-signature-box">
-                        <span class="card-cvv-vis" id="vis-card-cvv">•••</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- QR Code Box -->
-                <div class="bank-qr-box" id="payment-visual-qr-wrapper" style="display:none;">
-                  <div class="qr-code-img">
-                    <svg viewBox="0 0 100 100" style="width:100%; height:100%;">
-                      <!-- Artistic simulated SVG QR code -->
-                      <rect width="100" height="100" fill="#fff"/>
-                      <rect width="25" height="25" fill="#224b37"/>
-                      <rect x="5" y="5" width="15" height="15" fill="#fff"/>
-                      <rect x="9" y="9" width="7" height="7" fill="#224b37"/>
-                      
-                      <rect x="75" y="0" width="25" height="25" fill="#224b37"/>
-                      <rect x="80" y="5" width="15" height="15" fill="#fff"/>
-                      <rect x="84" y="9" width="7" height="7" fill="#224b37"/>
-                      
-                      <rect x="0" y="75" width="25" height="25" fill="#224b37"/>
-                      <rect x="5" y="80" width="15" height="15" fill="#fff"/>
-                      <rect x="9" y="84" width="7" height="7" fill="#224b37"/>
-                      
-                      <rect x="35" y="35" width="30" height="30" fill="#224b37"/>
-                      <rect x="40" y="40" width="20" height="20" fill="#fff"/>
-                      
-                      <rect x="30" y="10" width="10" height="15" fill="#f59e0b"/>
-                      <rect x="15" y="30" width="15" height="10" fill="#224b37"/>
-                      <rect x="45" y="15" width="20" height="8" fill="#224b37"/>
-                      <rect x="70" y="35" width="15" height="15" fill="#f59e0b"/>
-                      <rect x="80" y="60" width="10" height="25" fill="#224b37"/>
-                      <rect x="40" y="75" width="25" height="15" fill="#224b37"/>
-                      <rect x="65" y="85" width="15" height="10" fill="#f59e0b"/>
-                    </svg>
-                  </div>
-                  <span style="font-size:0.75rem; color:var(--text-muted);">Quét để thanh toán bằng MoMo / Mobile Banking</span>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="wizard-actions">
-              <button type="button" class="btn-secondary" id="btn-wizard-back-3">Quay lại</button>
-              <button type="submit" class="btn-accent" id="btn-wizard-submit">Hoàn tất & Đặt phòng</button>
-            </div>
-          </div>
-
-        </form>
-      </div>
-    </div>
-  </div>
 
   <!-- Footer -->
   <footer>
