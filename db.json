@@ -1,0 +1,128 @@
+{
+  "stays": [
+    {
+      "id": "s1",
+      "type": "stay",
+      "category": "Homestay Premium",
+      "name": "Sapa Cloud Retreat & Bungalow",
+      "location": "Tả Van, Sa Pa, Lào Cai",
+      "price": 1200000,
+      "rating": 4.9,
+      "reviewsCount": 154,
+      "images": [
+        "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?auto=format&fit=crop&w=800&q=80"
+      ],
+      "description": "Nằm giữa mây trời Tả Van, retreat mang đến không gian yên tĩnh tuyệt đối với tầm nhìn thung lũng Mường Hoa hùng vĩ.",
+      "amenities": [
+        "Wifi miễn phí",
+        "Bữa sáng",
+        "Hồ bơi vô cực",
+        "Dịch vụ đưa đón"
+      ],
+      "featured": true
+    },
+    {
+      "id": "s2",
+      "type": "stay",
+      "category": "Cabin Biệt Thự",
+      "name": "Dalat Pine Chalet & Glasshouse",
+      "location": "Phường 11, Đà Lạt, Lâm Đồng",
+      "price": 2500000,
+      "rating": 4.85,
+      "reviewsCount": 98,
+      "images": [
+        "https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80"
+      ],
+      "description": "Căn nhà kính giữa rừng thông Đà Lạt, nơi bạn có thể ngắm sao đêm ngay tại giường ngủ.",
+      "amenities": [
+        "Lò sưởi",
+        "Bếp riêng",
+        "Vườn BBQ",
+        "Máy chiếu phim"
+      ],
+      "featured": true
+    },
+    {
+      "id": "s3",
+      "type": "stay",
+      "category": "Nhà Trình Tường Hà Nhì",
+      "name": "Y Tý Cloud Hunter Nest",
+      "location": "Lao Chải, Y Tý, Bát Xát, Lào Cai",
+      "price": 600000,
+      "rating": 4.95,
+      "reviewsCount": 42,
+      "images": [
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"
+      ],
+      "description": "Trải nghiệm văn hóa Hà Nhì trong ngôi nhà trình tường truyền thống, địa điểm săn mây lý tưởng nhất Y Tý.",
+      "amenities": [
+        "Nước nóng",
+        "Thực phẩm địa phương",
+        "Hướng dẫn săn mây",
+        "Đốt lửa trại"
+      ]
+    }
+  ],
+  "tours": [
+    {
+      "id": "t1",
+      "type": "tour",
+      "category": "Trekking Mạo Hiểm",
+      "name": "Chinh phục Đỉnh Fansipan - Nóc nhà Đông Dương",
+      "location": "Vườn Quốc Gia Hoàng Liên",
+      "price": 3500000,
+      "rating": 4.98,
+      "reviewsCount": 210,
+      "difficulty": "Khó",
+      "images": [
+        "https://images.unsplash.com/photo-1527489377706-5bf97e608852?auto=format&fit=crop&q=80&w=800"
+      ],
+      "description": "Thử thách bản thân với cung đường trekking huyền thoại qua những cánh rừng đỗ quyên cổ thụ.",
+      "itinerary": [
+        { "day": 1, "title": "Cắm trại trên núi", "details": "Bắt đầu hành trình từ Trạm Tôn, leo qua rừng nguyên sinh." },
+        { "day": 2, "title": "Ngắm bình minh trên đỉnh", "details": "Chinh phục đỉnh cao 3143m và làm lễ nhận huy chương." }
+      ],
+      "featured": true
+    },
+    {
+      "id": "t2",
+      "type": "tour",
+      "category": "Khám Phá Văn Hóa",
+      "name": "Hành trình Di sản Đông Bắc: Hà Giang - Cao Bằng",
+      "location": "Hà Giang - Cao Bằng",
+      "price": 5800000,
+      "rating": 4.92,
+      "reviewsCount": 165,
+      "difficulty": "Vừa",
+      "images": [
+        "https://images.unsplash.com/photo-1502126324834-38f8e02d7160?auto=format&fit=crop&q=80&w=800"
+      ],
+      "description": "Khám phá Mã Pì Lèng, Thác Bản Giốc và những bản làng dân tộc thiểu số xa xôi.",
+      "itinerary": [
+        { "day": 1, "title": "Hà Giang Quản Bạ", "details": "Khám phá Cổng Trời và Núi Đôi Cô Tiên." }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "r1",
+      "targetId": "s1",
+      "userName": "Minh Anh",
+      "userAvatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100&q=80",
+      "rating": 5,
+      "comment": "View tuyệt đẹp, phòng sạch sẽ và nhân viên rất nhiệt tình.",
+      "date": "15/10/2023"
+    }
+  ],
+  "users": [
+    {
+      "id": "u-admin",
+      "email": "admin@mountaingoat.vn",
+      "password": "$2b$10$5bvaErHhsBI/o4nW6fe5ne2QwBNKs3Y2bce3icSLaoW.BQ.UjzdM6",
+      "name": "Super Admin",
+      "role": "superadmin"
+    }
+  ]
+}

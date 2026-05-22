@@ -5,16 +5,16 @@ const MGTApp = {
   currentProduct: null, // Stores active details item
   reviewSelectedStars: 5, // Default review score
 
-  init() {
+  async init() {
     this.initTheme();
     this.initRouting();
     this.bindEvents();
     this.updateAuthUI();
     
-    // Core renders
-    this.renderFeatured();
-    this.renderStays();
-    this.renderTours();
+    // Initial renders
+    await this.renderFeatured();
+    await this.renderStays();
+    await this.renderTours();
   },
 
   initTheme() {
@@ -55,7 +55,6 @@ const MGTApp = {
   },
 
   initRouting() {
-    // Router based on url hash changes
     const handleRoute = () => {
       const hash = window.location.hash || '#home';
       const sections = ['home', 'stays', 'tours', 'dashboard'];
@@ -63,7 +62,6 @@ const MGTApp = {
 
       if (!sections.includes(target)) return;
 
-      // Update active section visibility
       sections.forEach(s => {
         const secEl = document.getElementById(`section-${s}`);
         if (secEl) secEl.classList.remove('active');
@@ -72,11 +70,9 @@ const MGTApp = {
       const activeSec = document.getElementById(`section-${target}`);
       if (activeSec) {
         activeSec.classList.add('active');
-        // Scroll header threshold
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
-      // Update header links active style
       document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('data-target') === target) {
@@ -86,11 +82,10 @@ const MGTApp = {
     };
 
     window.addEventListener('hashchange', handleRoute);
-    handleRoute(); // Call once on start
+    handleRoute();
   },
 
   bindEvents() {
-    // Header scroll background effect
     window.addEventListener('scroll', () => {
       const header = document.getElementById('main-header');
       if (window.scrollY > 50) {
@@ -100,10 +95,8 @@ const MGTApp = {
       }
     });
 
-    // Theme Toggle
     document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
 
-    // Auth Button click
     document.getElementById('host-mode-btn').addEventListener('click', () => {
       const user = window.MountainGoatDB.getCurrentUser();
       if (user) {
@@ -113,7 +106,6 @@ const MGTApp = {
       }
     });
 
-    // Close Modals events
     document.getElementById('btn-close-detail').addEventListener('click', () => {
       document.getElementById('detail-modal').classList.remove('active');
     });
@@ -127,60 +119,51 @@ const MGTApp = {
       document.getElementById('contact-modal').classList.remove('active');
     });
 
-    // Stays filter listeners
-    const stayLoc = document.getElementById('stay-loc-filter');
-    const stayPrice = document.getElementById('stay-price-filter');
-    const staySort = document.getElementById('stay-sort');
-
-    if (stayLoc) stayLoc.addEventListener('change', () => this.renderStays());
-    if (stayPrice) {
-      stayPrice.addEventListener('input', (e) => {
+    if (document.getElementById('stay-loc-filter')) {
+      document.getElementById('stay-loc-filter').addEventListener('change', () => this.renderStays());
+    }
+    if (document.getElementById('stay-price-filter')) {
+      document.getElementById('stay-price-filter').addEventListener('input', (e) => {
         document.getElementById('stay-price-val').innerText = parseInt(e.target.value).toLocaleString('vi-VN') + 'đ';
         this.renderStays();
       });
     }
-    if (staySort) staySort.addEventListener('change', () => this.renderStays());
+    if (document.getElementById('stay-sort')) {
+      document.getElementById('stay-sort').addEventListener('change', () => this.renderStays());
+    }
 
-    // Tours filter listeners
-    const tourDiff = document.getElementById('tour-diff-filter');
-    const tourPrice = document.getElementById('tour-price-filter');
-    const tourSort = document.getElementById('tour-sort');
-
-    if (tourDiff) tourDiff.addEventListener('change', () => this.renderTours());
-    if (tourPrice) {
-      tourPrice.addEventListener('input', (e) => {
+    if (document.getElementById('tour-diff-filter')) {
+      document.getElementById('tour-diff-filter').addEventListener('change', () => this.renderTours());
+    }
+    if (document.getElementById('tour-price-filter')) {
+      document.getElementById('tour-price-filter').addEventListener('input', (e) => {
         document.getElementById('tour-price-val').innerText = parseInt(e.target.value).toLocaleString('vi-VN') + 'đ';
         this.renderTours();
       });
     }
-    if (tourSort) tourSort.addEventListener('change', () => this.renderTours());
+    if (document.getElementById('tour-sort')) {
+      document.getElementById('tour-sort').addEventListener('change', () => this.renderTours());
+    }
 
-    // Hero Widget Search Switch tab (stays vs tours UI dates fields config)
     const heroTabs = document.querySelectorAll('.search-tab');
     heroTabs.forEach(tab => {
       tab.addEventListener('click', (e) => {
         heroTabs.forEach(t => t.classList.remove('active'));
         e.target.classList.add('active');
-        
         const type = e.target.getAttribute('data-type');
         const dateField = document.getElementById('search-date-field');
-        
-        if (type === 'tour') {
-          dateField.style.display = 'none';
-        } else {
-          dateField.style.display = 'flex';
-        }
+        if (dateField) dateField.style.display = type === 'tour' ? 'none' : 'flex';
       });
     });
 
-    // Hero Search Action Button
-    document.getElementById('btn-hero-search').addEventListener('click', () => this.executeHeroSearch());
+    if (document.getElementById('btn-hero-search')) {
+      document.getElementById('btn-hero-search').addEventListener('click', () => this.executeHeroSearch());
+    }
 
+    if (document.getElementById('btn-trigger-checkout')) {
+      document.getElementById('btn-trigger-checkout').addEventListener('click', () => this.triggerCheckout());
+    }
 
-    // Trigger Checkout Button
-    document.getElementById('btn-trigger-checkout').addEventListener('click', () => this.triggerCheckout());
-
-    // Reviews Star Rating selections inside Modal
     const starSelector = document.getElementById('star-rating-selector');
     if (starSelector) {
       const stars = starSelector.querySelectorAll('.star-input');
@@ -190,20 +173,17 @@ const MGTApp = {
           this.reviewSelectedStars = rating;
           stars.forEach(s => {
             const r = parseInt(s.getAttribute('data-rating'), 10);
-            if (r <= rating) {
-              s.classList.add('active');
-            } else {
-              s.classList.remove('active');
-            }
+            if (r <= rating) s.classList.add('active');
+            else s.classList.remove('active');
           });
         });
       });
     }
 
-    // Submit review form
-    document.getElementById('btn-submit-review').addEventListener('click', () => this.submitReview());
+    if (document.getElementById('btn-submit-review')) {
+      document.getElementById('btn-submit-review').addEventListener('click', () => this.submitReview());
+    }
 
-    // Login Form Submit
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
       loginForm.addEventListener('submit', (e) => {
@@ -220,9 +200,7 @@ const MGTApp = {
     
     if (type === 'stay') {
       window.location.hash = '#stays';
-      // Sync destination select if matches any location, else trigger search filters
       const filterLoc = document.getElementById('stay-loc-filter');
-      
       let found = false;
       for (let i = 0; i < filterLoc.options.length; i++) {
         if (destination && filterLoc.options[i].value.toLowerCase().includes(destination.toLowerCase())) {
@@ -232,14 +210,14 @@ const MGTApp = {
         }
       }
       if (!found) filterLoc.value = 'all';
-      
       filterLoc.dispatchEvent(new Event('change'));
     } else {
       window.location.hash = '#tours';
-      // Sync and filter
       const diffLoc = document.getElementById('tour-diff-filter');
-      diffLoc.value = 'all';
-      diffLoc.dispatchEvent(new Event('change'));
+      if (diffLoc) {
+        diffLoc.value = 'all';
+        diffLoc.dispatchEvent(new Event('change'));
+      }
     }
 
     if (window.MGTBooking) {
@@ -247,75 +225,55 @@ const MGTApp = {
     }
   },
 
-  renderFeatured() {
+  async renderFeatured() {
     const grid = document.getElementById('home-featured-grid');
     if (!grid) return;
 
-    const stays = window.MountainGoatDB.getAllStays().filter(s => s.featured);
-    const tours = window.MountainGoatDB.getAllTours().filter(t => t.featured);
+    const stays = await window.MountainGoatDB.getAllStays();
+    const tours = await window.MountainGoatDB.getAllTours();
     
-    // Combine features
-    const allFeatured = [...stays, ...tours].slice(0, 3);
-    
+    const allFeatured = [...stays.filter(s => s.featured), ...tours.filter(t => t.featured)].slice(0, 3);
     grid.innerHTML = allFeatured.map(item => this.createCardHTML(item)).join('');
   },
 
-  renderStays() {
+  async renderStays() {
     const grid = document.getElementById('stays-list-grid');
     if (!grid) return;
 
-    let stays = window.MountainGoatDB.getAllStays();
+    let stays = await window.MountainGoatDB.getAllStays();
 
-    // 1. Location filter
     const loc = document.getElementById('stay-loc-filter').value;
-    if (loc !== "all") {
-      stays = stays.filter(s => s.location.includes(loc));
-    }
+    if (loc !== "all") stays = stays.filter(s => s.location.includes(loc));
 
-    // 2. Price filter
     const price = parseInt(document.getElementById('stay-price-filter').value, 10);
     stays = stays.filter(s => s.price <= price);
 
-    // 3. Sorting
     const sort = document.getElementById('stay-sort').value;
-    if (sort === "price-asc") {
-      stays.sort((a, b) => a.price - b.price);
-    } else if (sort === "price-desc") {
-      stays.sort((a, b) => b.price - a.price);
-    } else {
-      stays.sort((a, b) => b.rating - a.rating);
-    }
+    if (sort === "price-asc") stays.sort((a, b) => a.price - b.price);
+    else if (sort === "price-desc") stays.sort((a, b) => b.price - a.price);
+    else stays.sort((a, b) => b.rating - a.rating);
 
     grid.innerHTML = stays.length > 0 
       ? stays.map(s => this.createCardHTML(s)).join('')
       : `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--text-muted);">Không tìm thấy phòng phù hợp bộ lọc của bạn.</div>`;
   },
 
-  renderTours() {
+  async renderTours() {
     const grid = document.getElementById('tours-list-grid');
     if (!grid) return;
 
-    let tours = window.MountainGoatDB.getAllTours();
+    let tours = await window.MountainGoatDB.getAllTours();
 
-    // 1. Difficulty filter
     const diff = document.getElementById('tour-diff-filter').value;
-    if (diff !== "all") {
-      tours = tours.filter(t => t.difficulty === diff);
-    }
+    if (diff !== "all") tours = tours.filter(t => t.difficulty === diff);
 
-    // 2. Price filter
     const price = parseInt(document.getElementById('tour-price-filter').value, 10);
     tours = tours.filter(t => t.price <= price);
 
-    // 3. Sorting
     const sort = document.getElementById('tour-sort').value;
-    if (sort === "price-asc") {
-      tours.sort((a, b) => a.price - b.price);
-    } else if (sort === "price-desc") {
-      tours.sort((a, b) => b.price - a.price);
-    } else {
-      tours.sort((a, b) => b.rating - a.rating);
-    }
+    if (sort === "price-asc") tours.sort((a, b) => a.price - b.price);
+    else if (sort === "price-desc") tours.sort((a, b) => b.price - a.price);
+    else tours.sort((a, b) => b.rating - a.rating);
 
     grid.innerHTML = tours.length > 0
       ? tours.map(t => this.createCardHTML(t)).join('')
@@ -369,7 +327,7 @@ const MGTApp = {
     `;
   },
 
-  toggleWishlist(itemId, event) {
+  async toggleWishlist(itemId, event) {
     if (event) event.stopPropagation();
     const isAdded = window.MountainGoatDB.toggleWishlist(itemId);
     
@@ -377,20 +335,18 @@ const MGTApp = {
       window.MGTBooking.showToast(isAdded ? "Đã thêm vào mục yêu thích!" : "Đã xóa khỏi mục yêu thích!", "success");
     }
 
-    // Refresh UI elements
-    this.renderStays();
-    this.renderTours();
-    this.renderFeatured();
+    await this.renderStays();
+    await this.renderTours();
+    await this.renderFeatured();
     if (window.MGTDashboard) window.MGTDashboard.renderWishlist();
   },
 
-  openDetail(itemId) {
-    const item = window.MountainGoatDB.getItemById(itemId);
+  async openDetail(itemId) {
+    const item = await window.MountainGoatDB.getItemById(itemId);
     if (!item) return;
 
     this.currentProduct = item;
 
-    // Open detail modal UI values
     document.getElementById('modal-detail-title').innerText = item.name;
     document.getElementById('modal-detail-desc').innerText = item.description;
     
@@ -403,20 +359,15 @@ const MGTApp = {
       <span>${item.location}</span>
     `;
 
-    // Reset Review input form
     document.getElementById('review-comment-input').value = '';
-    
-    // Reset star rating UI selection back to 5
     this.reviewSelectedStars = 5;
     const stars = document.getElementById('star-rating-selector').querySelectorAll('.star-input');
     stars.forEach(s => s.classList.add('active'));
 
-    // Sidebar price display config
     const formattedPrice = window.MGTBooking ? window.MGTBooking.formatVND(item.price) : `${item.price}đ`;
     document.getElementById('modal-sidebar-price').innerText = formattedPrice;
     document.getElementById('modal-sidebar-unit').innerText = item.type === 'stay' ? '/đêm' : '/khách';
 
-    // Gallery configuration
     const mainImg = document.getElementById('modal-gallery-img');
     mainImg.src = item.images[0];
     
@@ -425,9 +376,7 @@ const MGTApp = {
       <img src="${img}" alt="thumbnail" class="thumb ${idx === 0 ? 'active' : ''}" onclick="MGTApp.changeMainGalleryImage('${img}', this)">
     `).join('');
 
-    // Toggle stays vs tours info displays
     if (item.type === "stay") {
-      // Render Amenities checklist
       let amenitiesHTML = `
         <h3 style="font-family: var(--font-display); font-size:1.15rem; margin-bottom:12px;">Tiện Nghi Chỗ Ở</h3>
         <div class="amenities-list">
@@ -447,7 +396,6 @@ const MGTApp = {
       document.getElementById('modal-spec-container').innerHTML = amenitiesHTML;
 
     } else {
-      // Render Itinerary Timeline list
       let itineraryHTML = `
         <h3 style="font-family: var(--font-display); font-size:1.15rem; margin-bottom:15px;">Lộ Trình Tour</h3>
         <div class="itinerary-timeline">
@@ -465,14 +413,11 @@ const MGTApp = {
       document.getElementById('modal-spec-container').innerHTML = itineraryHTML;
     }
 
-    // Load dynamic Reviews list for item
-    this.renderModalReviews(itemId);
+    await this.renderModalReviews(itemId);
 
-    // Initial button text
     const btn = document.getElementById('btn-trigger-checkout');
-    btn.innerText = `LIÊN HỆ TƯ VẤN`;
+    if (btn) btn.innerText = `LIÊN HỆ TƯ VẤN`;
 
-    // Show Detail Modal
     document.getElementById('detail-modal').classList.add('active');
   },
 
@@ -483,15 +428,14 @@ const MGTApp = {
   },
 
   triggerCheckout() {
-    // Open Contact Modal instead of Booking Wizard
     document.getElementById('contact-modal').classList.add('active');
   },
 
-  handleLogin() {
+  async handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
 
-    const user = window.MountainGoatDB.login(email, password);
+    const user = await window.MountainGoatDB.login(email, password);
     if (user) {
       if (window.MGTBooking) window.MGTBooking.showToast("Đăng nhập thành công!", "success");
       document.getElementById('login-modal').classList.remove('active');
@@ -519,8 +463,6 @@ const MGTApp = {
 
     if (user) {
       hostBtn.innerText = 'Bảng điều khiển';
-
-      // Add Logout button if not exists
       if (!document.getElementById('logout-btn')) {
         const logoutBtn = document.createElement('button');
         logoutBtn.id = 'logout-btn';
@@ -531,26 +473,22 @@ const MGTApp = {
         authActions.appendChild(logoutBtn);
       }
 
-      // Show admin only menu items if superadmin
       const adminOnlyMenu = document.getElementById('menu-item-admin-only');
-      if (adminOnlyMenu) {
-        adminOnlyMenu.style.display = user.role === 'superadmin' ? 'block' : 'none';
-      }
+      if (adminOnlyMenu) adminOnlyMenu.style.display = user.role === 'superadmin' ? 'block' : 'none';
     } else {
       hostBtn.innerText = 'Đăng nhập';
       const logoutBtn = document.getElementById('logout-btn');
       if (logoutBtn) logoutBtn.remove();
-
       const adminOnlyMenu = document.getElementById('menu-item-admin-only');
       if (adminOnlyMenu) adminOnlyMenu.style.display = 'none';
     }
   },
 
-  renderModalReviews(itemId) {
+  async renderModalReviews(itemId) {
     const listContainer = document.getElementById('modal-reviews-list');
     if (!listContainer) return;
 
-    const reviews = window.MountainGoatDB.getItemReviews(itemId);
+    const reviews = await window.MountainGoatDB.getItemReviews(itemId);
 
     if (reviews.length === 0) {
       listContainer.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted); padding:10px 0;">Chưa có nhận xét nào cho dịch vụ này. Hãy là người đầu tiên đánh giá!</p>`;
@@ -572,7 +510,7 @@ const MGTApp = {
     `).join('');
   },
 
-  submitReview() {
+  async submitReview() {
     if (!this.currentProduct) return;
 
     const comment = document.getElementById('review-comment-input').value.trim();
@@ -592,28 +530,22 @@ const MGTApp = {
       comment: comment
     };
 
-    // Save review
-    window.MountainGoatDB.addReview(newReview);
+    await window.MountainGoatDB.addReview(newReview);
 
     if (window.MGTBooking) window.MGTBooking.showToast("Gửi đánh giá thành công!", "success");
 
-    // Refresh modal review section & stats values
-    this.renderModalReviews(this.currentProduct.id);
-    
-    // Refresh parent listings displays (update stars values)
-    this.renderStays();
-    this.renderTours();
-    this.renderFeatured();
+    await this.renderModalReviews(this.currentProduct.id);
+    await this.renderStays();
+    await this.renderTours();
+    await this.renderFeatured();
 
-    // Reload Details rating details header
-    const updatedItem = window.MountainGoatDB.getItemById(this.currentProduct.id);
+    const updatedItem = await window.MountainGoatDB.getItemById(this.currentProduct.id);
     if (updatedItem) {
       const ratingText = `★ ${updatedItem.rating} (${updatedItem.reviewsCount} đánh giá)`;
       document.getElementById('modal-rev-avg').innerText = ratingText;
       document.getElementById('modal-rev-count').innerText = updatedItem.reviewsCount;
     }
 
-    // Reset textarea comment form
     document.getElementById('review-comment-input').value = '';
   }
 };

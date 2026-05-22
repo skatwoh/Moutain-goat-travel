@@ -1,16 +1,18 @@
 // Dashboard Management Module
-// Handles user bookings history, wishlists, host metrics, and SVG chart rendering.
+// Handles user wishlists, host metrics, and admin management.
 
 const MGTDashboard = {
-  init() {
+  eventsBound: false,
+
+  async init() {
     this.checkAccess();
     if (!this.eventsBound) {
       this.bindEvents();
       this.eventsBound = true;
     }
-    this.renderWishlist();
-    this.renderStats();
-    this.renderAdmins();
+    await this.renderWishlist();
+    await this.renderStats();
+    await this.renderAdmins();
   },
 
   checkAccess() {
@@ -23,149 +25,63 @@ const MGTDashboard = {
   },
 
   bindEvents() {
-    // Menu tab switching
     const menuButtons = document.querySelectorAll('.dash-menu-item');
     menuButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', async (e) => {
         const targetTab = e.currentTarget.getAttribute('data-tab');
-        this.switchTab(targetTab, e.currentTarget);
+        await this.switchTab(targetTab, e.currentTarget);
       });
     });
 
-    // Handle listing type toggle (stays vs tours show/hide difficulty or guests fields)
     const typeSelect = document.getElementById('list-type');
     if (typeSelect) {
       typeSelect.addEventListener('change', (e) => {
         const difficultyGroup = document.getElementById('group-difficulty');
         const guestsGroup = document.getElementById('group-guests');
         if (e.target.value === "tour") {
-          difficultyGroup.style.display = "block";
-          guestsGroup.style.display = "none";
+          if (difficultyGroup) difficultyGroup.style.display = "block";
+          if (guestsGroup) guestsGroup.style.display = "none";
         } else {
-          difficultyGroup.style.display = "none";
-          guestsGroup.style.display = "block";
+          if (difficultyGroup) difficultyGroup.style.display = "none";
+          if (guestsGroup) guestsGroup.style.display = "block";
         }
       });
     }
 
-    // Submit new listing form
     const listingForm = document.getElementById('new-listing-form');
     if (listingForm) {
-      listingForm.addEventListener('submit', (e) => {
+      listingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        this.createNewListing();
+        await this.createNewListing();
       });
     }
 
-    // Create admin form submit
     const createAdminForm = document.getElementById('create-admin-form');
     if (createAdminForm) {
-      createAdminForm.addEventListener('submit', (e) => {
+      createAdminForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        this.handleCreateAdmin();
+        await this.handleCreateAdmin();
       });
     }
   },
 
-  switchTab(tabId, buttonElement) {
-    // Reset active buttons
+  async switchTab(tabId, buttonElement) {
     document.querySelectorAll('.dash-menu-item').forEach(btn => btn.classList.remove('active'));
     buttonElement.classList.add('active');
 
-    // Reset active panels
     document.querySelectorAll('.dash-content-block').forEach(panel => panel.classList.remove('active'));
     
-    // Show selected panel
     const targetPanel = document.getElementById(`dash-${tabId}`);
     if (targetPanel) {
       targetPanel.classList.add('active');
     }
 
-    // Special renders when switching
-    if (tabId === 'user-wishlist') this.renderWishlist();
-    if (tabId === 'host-stats') this.renderStats();
-    if (tabId === 'admin-users') this.renderAdmins();
+    if (tabId === 'user-wishlist') await this.renderWishlist();
+    if (tabId === 'host-stats') await this.renderStats();
+    if (tabId === 'admin-users') await this.renderAdmins();
   },
 
-  renderBookings() {
-    const container = document.getElementById('user-bookings-container');
-    if (!container) return;
-
-    const bookings = window.MountainGoatDB.getBookings();
-
-    if (bookings.length === 0) {
-      container.innerHTML = `
-        <div style="text-align: center; padding: 40px; color: var(--text-muted); border: 2px dashed var(--border); border-radius: var(--radius-md);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 48px; height: 48px; margin-bottom:15px; opacity:0.5;">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-          <p>Bạn chưa có đặt chỗ nào. Hãy lựa chọn homestay hoặc tour yêu thích nhé!</p>
-        </div>
-      `;
-      return;
-    }
-
-    container.innerHTML = bookings.map(b => {
-      let statusClass = "upcoming";
-      let statusText = "Chờ khởi hành";
-      let cancelButton = "";
-
-      if (b.status === "cancelled") {
-        statusClass = "cancelled";
-        statusText = "Đã Hủy";
-      } else if (b.status === "completed") {
-        statusClass = "completed";
-        statusText = "Đã hoàn thành";
-      } else {
-        // Can only cancel upcoming bookings
-        cancelButton = `<button class="btn-secondary" onclick="MGTDashboard.cancelBooking('${b.id}')" style="padding: 6px 12px; font-size: 0.8rem; color: var(--danger); border-color: var(--danger);">Hủy Đặt</button>`;
-      }
-
-      const totalVal = window.MGTBooking ? window.MGTBooking.formatVND(b.calculation.total) : `${b.calculation.total}đ`;
-      const dateRange = b.itemType === 'stay' 
-        ? `${new Date(b.params.startDate).toLocaleDateString('vi-VN')} - ${new Date(b.params.endDate).toLocaleDateString('vi-VN')}`
-        : `Ngày đi: ${b.params.startDate}`;
-
-      return `
-        <div class="history-card" id="booking-card-${b.id}">
-          <img src="${b.image}" alt="${b.itemName}" class="history-item-img">
-          <div class="history-card-details">
-            <span class="status-badge ${statusClass}">${statusText}</span>
-            <h4 style="margin-top: 6px;">${b.itemName}</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">
-              <span>${dateRange}</span> | <strong>${b.params.guests} khách</strong>
-            </p>
-            <p style="font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-top: 4px;">
-              Tổng tiền: ${totalVal}
-            </p>
-          </div>
-          <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
-            <span style="font-size:0.75rem; color:var(--text-muted);">Mã đơn: <strong>${b.id}</strong></span>
-            ${cancelButton}
-          </div>
-        </div>
-      `;
-    }).join('');
-  },
-
-  cancelBooking(bookingId) {
-    if (confirm("Bạn có chắc chắn muốn hủy đặt chỗ này không?")) {
-      const success = window.MountainGoatDB.cancelBooking(bookingId);
-      if (success) {
-        if (window.MGTBooking) {
-          window.MGTBooking.showToast("Hủy đặt phòng thành công!", "success");
-        }
-        this.renderBookings();
-        this.renderStats();
-      } else {
-        if (window.MGTBooking) {
-          window.MGTBooking.showToast("Không tìm thấy đơn hàng!", "error");
-        }
-      }
-    }
-  },
-
-  renderWishlist() {
+  async renderWishlist() {
     const container = document.getElementById('user-wishlist-container');
     if (!container) return;
 
@@ -183,16 +99,16 @@ const MGTDashboard = {
       return;
     }
 
-    container.innerHTML = wishlistIds.map(id => {
-      const item = window.MountainGoatDB.getItemById(id);
-      if (!item) return '';
+    let html = '';
+    for (const id of wishlistIds) {
+      const item = await window.MountainGoatDB.getItemById(id);
+      if (!item) continue;
       
       const priceVal = window.MGTBooking ? window.MGTBooking.formatVND(item.price) : `${item.price}đ`;
       const priceUnit = item.type === 'stay' ? '/đêm' : '/khách';
-      const badgeClass = item.type === 'stay' ? 'stay' : 'tour';
       const badgeLabel = item.type === 'stay' ? 'Homestay' : 'Tour';
 
-      return `
+      html += `
         <div class="listing-card">
           <div class="card-img-wrapper">
             <span class="badge-tag">${badgeLabel}</span>
@@ -221,77 +137,53 @@ const MGTDashboard = {
           </div>
         </div>
       `;
-    }).join('');
+    }
+    container.innerHTML = html;
   },
 
-  toggleWishlistItem(itemId, event) {
+  async toggleWishlistItem(itemId, event) {
     if (event) event.stopPropagation();
     window.MountainGoatDB.toggleWishlist(itemId);
-    this.renderWishlist();
+    await this.renderWishlist();
     if (window.MGTApp) {
-      window.MGTApp.renderStays();
-      window.MGTApp.renderTours();
-      window.MGTApp.renderFeatured();
+      await window.MGTApp.renderStays();
+      await window.MGTApp.renderTours();
+      await window.MGTApp.renderFeatured();
     }
   },
 
-  renderStats() {
-    const bookings = window.MountainGoatDB.getBookings() || [];
-    
-    // Filter active bookings (exclude cancelled)
-    const activeBookings = bookings.filter(b => b.status !== "cancelled");
-    
-    // Calculate total revenue
-    const revenue = activeBookings.reduce((sum, b) => sum + b.calculation.total, 0);
+  async renderStats() {
+    // Stats are currently based on existing listings as a mock for real "interest"
+    const stays = await window.MountainGoatDB.getAllStays();
+    const tours = await window.MountainGoatDB.getAllTours();
+    const all = [...stays, ...tours];
 
-    // Render Stats values
-    const revEl = document.getElementById('host-stat-revenue');
     const bookingsEl = document.getElementById('host-stat-bookings');
-    
-    if (revEl && bookingsEl) {
-      revEl.innerText = window.MGTBooking ? window.MGTBooking.formatVND(revenue) : `${revenue}đ`;
-      bookingsEl.innerText = activeBookings.length;
+    if (bookingsEl) {
+      bookingsEl.innerText = all.length;
     }
 
-    // Draw SVG Chart
     const chartSvg = document.getElementById('revenue-chart');
     if (!chartSvg) return;
 
-    // Define last 7 days names (in Vietnamese)
     const days = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
-    
-    // Mock baseline values based on total bookings (add active bookings revenue dynamically into the chart elements)
-    // To make it look dynamic and interesting, let's distribute revenue or use baseline values
-    let chartValues = [4.5, 3.2, 5.8, 4.0, 7.5, 12.0, 9.5]; // Baseline in million VND
-    
-    // If there is real revenue, distribute it or add weight to weekend days
-    if (revenue > 0) {
-      const revenueMillion = revenue / 1000000;
-      // Distribute a portion of real revenue into the weekend/latest days of chart values
-      chartValues[5] += revenueMillion * 0.6; // Saturday gets 60%
-      chartValues[6] += revenueMillion * 0.4; // Sunday gets 40%
-    }
+    let chartValues = [4.5, 3.2, 5.8, 4.0, 7.5, 12.0, 9.5];
 
-    // Dimensions
     const svgWidth = 600;
     const svgHeight = 250;
     const padding = { top: 30, right: 20, bottom: 40, left: 50 };
     const chartWidth = svgWidth - padding.left - padding.right;
     const chartHeight = svgHeight - padding.top - padding.bottom;
 
-    // Find Max Value for scaling
     const maxVal = Math.max(...chartValues, 10);
-    const yMax = Math.ceil(maxVal / 5) * 5; // Round to nearest multiple of 5
+    const yMax = Math.ceil(maxVal / 5) * 5;
 
-    // Build SVG Elements
     let svgContent = `
       <defs>
-        <!-- Bar Gradient -->
         <linearGradient id="bar-grad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" />
           <stop offset="100%" stop-color="var(--primary)" />
         </linearGradient>
-        <!-- Background Grid Style -->
         <style>
           .grid-line { stroke: var(--border); stroke-width: 1; stroke-dasharray: 4,4; }
           .axis-label { font-size: 11px; fill: var(--text-muted); font-family: var(--font-sans); }
@@ -303,18 +195,13 @@ const MGTDashboard = {
       </defs>
     `;
 
-    // Draw Y Axis grid lines & labels (4 subdivisions)
     for (let i = 0; i <= 4; i++) {
       const yVal = (yMax / 4) * i;
       const yPos = padding.top + chartHeight - (chartHeight * (yVal / yMax));
-      
-      // Horizontal grid lines
       svgContent += `<line x1="${padding.left}" y1="${yPos}" x2="${svgWidth - padding.right}" y2="${yPos}" class="grid-line" />`;
-      // Y labels
       svgContent += `<text x="${padding.left - 10}" y="${yPos + 4}" class="axis-label" text-anchor="end">${yVal}M</text>`;
     }
 
-    // Draw bars & X labels
     const barWidth = 35;
     const colWidth = chartWidth / chartValues.length;
 
@@ -323,26 +210,20 @@ const MGTDashboard = {
       const valHeight = chartHeight * (val / yMax);
       const yPos = padding.top + chartHeight - valHeight;
 
-      // Group for interactions
       svgContent += `
         <g class="bar-group">
-          <!-- Text label on hover -->
           <text x="${xPos + barWidth/2}" y="${yPos - 8}" class="value-label">${val.toFixed(1)} Tr</text>
-          <!-- Rounded Rectangle Bar -->
           <rect x="${xPos}" y="${yPos}" width="${barWidth}" height="${valHeight}" rx="6" ry="6" fill="url(#bar-grad)" class="bar-rect" />
-          <!-- X Axis Label -->
           <text x="${xPos + barWidth/2}" y="${svgHeight - 15}" class="axis-label" text-anchor="middle">${days[idx]}</text>
         </g>
       `;
     });
 
-    // Draw base line
     svgContent += `<line x1="${padding.left}" y1="${padding.top + chartHeight}" x2="${svgWidth - padding.right}" y2="${padding.top + chartHeight}" stroke="var(--border)" stroke-width="2" />`;
-
     chartSvg.innerHTML = svgContent;
   },
 
-  createNewListing() {
+  async createNewListing() {
     const user = window.MountainGoatDB.getCurrentUser();
     if (!user) {
       if (window.MGTBooking) window.MGTBooking.showToast("Bạn cần đăng nhập để thực hiện chức năng này!", "error");
@@ -358,22 +239,18 @@ const MGTDashboard = {
     const desc = document.getElementById('list-desc').value.trim();
 
     if (!category || !name || !price || !location || !desc) {
-      if (window.MGTBooking) {
-        window.MGTBooking.showToast("Vui lòng nhập đầy đủ các trường!", "error");
-      }
+      if (window.MGTBooking) window.MGTBooking.showToast("Vui lòng nhập đầy đủ các trường!", "error");
       return;
     }
 
-    // Build listing object
-    const newId = `custom-${type}-${Date.now().toString().slice(-4)}`;
     const newListing = {
-      id: newId,
+      id: `custom-${type}-${Date.now().toString().slice(-4)}`,
       name: name,
       category: category,
       type: type,
       location: location,
       price: price,
-      rating: 5.0, // default rating
+      rating: 5.0,
       reviewsCount: 0,
       description: desc,
       images: [image],
@@ -394,57 +271,49 @@ const MGTDashboard = {
       newListing.inclusions = ["Vé tham quan chính", "Hướng dẫn viên du lịch", "Bảo hiểm du lịch cơ bản"];
       newListing.departureDates = ["Hàng tuần", "Cuối tuần"];
       newListing.itinerary = [
-        { day: 1, title: "Khởi hành & Nhận đoàn", details: "Xe đón đoàn tại trung tâm và di chuyển đến địa điểm khám phá." },
-        { day: 2, title: "Trải nghiệm & Trở về", details: "Tham quan đỉnh cao, ăn tối bản địa và xe tiễn đoàn về lại điểm hẹn ban đầu." }
+        { day: 1, title: "Khởi hành", details: "Xe đón đoàn tại trung tâm." },
+        { day: 2, title: "Trải nghiệm", details: "Tham quan và khám phá." }
       ];
     }
 
-    // Save
-    window.MountainGoatDB.addListing(newListing);
+    await window.MountainGoatDB.addListing(newListing);
 
-    if (window.MGTBooking) {
-      window.MGTBooking.showToast(`Đăng tin ${type === 'stay' ? 'homestay' : 'tour'} mới thành công!`, "success");
-    }
-
-    // Reset Form
+    if (window.MGTBooking) window.MGTBooking.showToast(`Đăng tin thành công!`, "success");
     document.getElementById('new-listing-form').reset();
 
-    // Trigger tab redirection & refresh listings views
-    setTimeout(() => {
+    setTimeout(async () => {
       if (window.MGTApp) {
-        window.MGTApp.renderStays();
-        window.MGTApp.renderTours();
-        window.MGTApp.renderFeatured();
+        await window.MGTApp.renderStays();
+        await window.MGTApp.renderTours();
+        await window.MGTApp.renderFeatured();
       }
-      
-      // Redirect to section listings
       window.location.hash = `#${type}s`;
     }, 400);
   },
 
-  handleCreateAdmin() {
+  async handleCreateAdmin() {
     const name = document.getElementById('admin-name').value;
     const email = document.getElementById('admin-email').value;
     const password = document.getElementById('admin-password').value;
 
     try {
-      window.MountainGoatDB.createAdmin({ name, email, password });
+      await window.MountainGoatDB.createAdmin({ name, email, password });
       if (window.MGTBooking) window.MGTBooking.showToast("Tạo tài khoản admin thành công!", "success");
       document.getElementById('create-admin-form').reset();
-      this.renderAdmins();
+      await this.renderAdmins();
     } catch (error) {
       if (window.MGTBooking) window.MGTBooking.showToast(error.message, "error");
     }
   },
 
-  renderAdmins() {
+  async renderAdmins() {
     const container = document.getElementById('admin-users-list');
     if (!container) return;
 
-    const users = window.MountainGoatDB.getUsers();
+    const users = await window.MountainGoatDB.getUsers();
 
-    if (users.length === 0) {
-      container.innerHTML = `<p style="color: var(--text-muted);">Chưa có tài khoản nào.</p>`;
+    if (!users || users.length === 0) {
+      container.innerHTML = `<p style="color: var(--text-muted);">Chưa có tài khoản nào hoặc không có quyền truy cập.</p>`;
       return;
     }
 

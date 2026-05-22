@@ -1,0 +1,14 @@
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.DS_Store
+server_test.log
+verify_final.py
+verify_results.txt
+failed_homepage.png
+failed_add_listing.png
+error.png
+temp_verify.py
+failed_count.png
