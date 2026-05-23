@@ -160,7 +160,7 @@
     {
       "id": "u-admin",
       "email": "admin@mountaingoat.vn",
-      "password": "$2b$10$VCb0Sr9FL4i.F2Xs2V9j9uu0.F/ajhEJOdG4mF309kx/a7iUU0kyK",
+      "password": "$2b$10$r2Gm3OgjPchkwn.oZOZ1n.pzTlILveRtGf7Ik2ayvvs1N5u9I1zl2",
       "name": "Super Admin",
       "role": "superadmin"
     }

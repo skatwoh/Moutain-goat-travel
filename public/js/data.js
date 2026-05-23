@@ -1,6 +1,6 @@
 // Data module for Mountain Goat Travel (MGT) - API version
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = '/api';
 
 const MountainGoatDB = {
   async init() {

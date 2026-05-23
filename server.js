@@ -30,8 +30,13 @@ const writeDB = (data) => {
 
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password required' });
+  }
+
   const db = readDB();
-  const user = db.users.find(u => u.email === email);
+  const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
 
   if (user && await bcrypt.compare(password, user.password)) {
     const token = 'tok-' + Math.random().toString(36).substr(2, 9);
