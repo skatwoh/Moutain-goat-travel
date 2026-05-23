@@ -1,6 +1,34 @@
 {
   "stays": [
     {
+      "id": "custom-stay-0239",
+      "name": "VERIFIED HOMESTAY 1779555429",
+      "category": "Test Category",
+      "type": "stay",
+      "location": "Hà Nội, Việt Nam",
+      "price": 999000,
+      "rating": 5,
+      "reviewsCount": 0,
+      "description": "This is a verified listing created by automated test.",
+      "images": [
+        "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?auto=format&fit=crop&w=800&q=80"
+      ],
+      "owner": {
+        "name": "Super Admin",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80",
+        "badge": "Quản trị viên"
+      },
+      "featured": false,
+      "authorId": "u-admin",
+      "maxGuests": 2,
+      "amenities": [
+        "Wi-Fi miễn phí",
+        "Điều hòa nhiệt độ",
+        "Bếp chung",
+        "Tivi truyền hình cáp"
+      ]
+    },
+    {
       "id": "s1",
       "type": "stay",
       "category": "Homestay Premium",
@@ -81,8 +109,16 @@
       ],
       "description": "Thử thách bản thân với cung đường trekking huyền thoại qua những cánh rừng đỗ quyên cổ thụ.",
       "itinerary": [
-        { "day": 1, "title": "Cắm trại trên núi", "details": "Bắt đầu hành trình từ Trạm Tôn, leo qua rừng nguyên sinh." },
-        { "day": 2, "title": "Ngắm bình minh trên đỉnh", "details": "Chinh phục đỉnh cao 3143m và làm lễ nhận huy chương." }
+        {
+          "day": 1,
+          "title": "Cắm trại trên núi",
+          "details": "Bắt đầu hành trình từ Trạm Tôn, leo qua rừng nguyên sinh."
+        },
+        {
+          "day": 2,
+          "title": "Ngắm bình minh trên đỉnh",
+          "details": "Chinh phục đỉnh cao 3143m và làm lễ nhận huy chương."
+        }
       ],
       "featured": true
     },
@@ -101,7 +137,11 @@
       ],
       "description": "Khám phá Mã Pì Lèng, Thác Bản Giốc và những bản làng dân tộc thiểu số xa xôi.",
       "itinerary": [
-        { "day": 1, "title": "Hà Giang Quản Bạ", "details": "Khám phá Cổng Trời và Núi Đôi Cô Tiên." }
+        {
+          "day": 1,
+          "title": "Hà Giang Quản Bạ",
+          "details": "Khám phá Cổng Trời và Núi Đôi Cô Tiên."
+        }
       ]
     }
   ],
@@ -120,7 +160,7 @@
     {
       "id": "u-admin",
       "email": "admin@mountaingoat.vn",
-      "password": "$2b$10$5bvaErHhsBI/o4nW6fe5ne2QwBNKs3Y2bce3icSLaoW.BQ.UjzdM6",
+      "password": "$2b$10$VCb0Sr9FL4i.F2Xs2V9j9uu0.F/ajhEJOdG4mF309kx/a7iUU0kyK",
       "name": "Super Admin",
       "role": "superadmin"
     }
