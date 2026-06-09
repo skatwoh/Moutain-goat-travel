@@ -1,15 +1,21 @@
 {
-  "name": "mountain-goat-travel",
-  "version": "1.0.0",
-  "description": "Mountain Goat Travel - Homestay & Tour Booking",
-  "main": "server.js",
+  "name": "trip",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "node server.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
   },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "bcryptjs": "^2.4.3",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6"
   }
 }
